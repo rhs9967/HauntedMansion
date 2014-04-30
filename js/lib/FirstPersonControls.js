@@ -208,6 +208,19 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		}
 
 		var actualMoveSpeed = delta * this.movementSpeed;
+		
+		// Addition //
+		// temp target for movement
+		var tempTarget = this.target,
+			position = this.object.position;
+
+		tempTarget.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
+		tempTarget.y = position.y;
+		tempTarget.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
+		
+		this.object.lookAt( tempTarget);
+		
+		// end addition //
 
 		if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
 		if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
@@ -215,8 +228,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
 		if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
 
-		if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
-		if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
+		//if ( this.moveUp ) this.object.translateY( actualMoveSpeed );
+		//if ( this.moveDown ) this.object.translateY( - actualMoveSpeed );
 
 		var actualLookSpeed = delta * this.lookSpeed;
 
@@ -247,7 +260,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			this.phi = THREE.Math.mapLinear( this.phi, 0, Math.PI, this.verticalMin, this.verticalMax );
 
 		}
-
+		
+		// set actual target
 		var targetPosition = this.target,
 			position = this.object.position;
 
