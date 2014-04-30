@@ -34,6 +34,18 @@ app.keydown = [];
 	queue.loadFile("js/lib/FirstPersonControls.js");
 	queue.loadFile("js/city.js");
 	
+	// skybox files
+	queue.loadFile("js/Detector.js");
+	queue.loadFile("js/Stats.js");
+	queue.loadFile("js/OrbitControls.js");
+	queue.loadFile("js/THREEx.KeyboardState.js");
+	queue.loadFile("js/THREEx.FullScreen.js");
+	queue.loadFile("js/THREEx.WindowResize.js");
+	
+	// additional files
+	queue.loadFile("js/jquery-1.9.1.js");
+	queue.loadFile("js/jquery-ui.js");
+	
 	function handleFileLoad(e){
 		console.log(e + " loaded");
 	}
