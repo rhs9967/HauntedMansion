@@ -44,6 +44,9 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.moveLeft = false;
 	this.moveRight = false;
 	this.freeze = false;
+	
+	// addition
+	this.reset = false;
 
 	this.mouseDragOn = false;
 
@@ -158,6 +161,9 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 70: /*F*/ this.moveDown = true; break;
 
 			case 81: /*Q*/ this.freeze = !this.freeze; break;
+			
+			// addition
+			case 90: /*Z*/ this.reset = true; break;
 
 		}
 
@@ -181,12 +187,22 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			case 82: /*R*/ this.moveUp = false; break;
 			case 70: /*F*/ this.moveDown = false; break;
+			
+			// addition
+			case 90: /*Z*/ this.reset = false; break;
 
 		}
 
 	};
 
 	this.update = function( delta ) {
+	
+		// addition
+		if (this.reset ) {
+			this.target = new THREE.Vector3( 0, 0, 0 );
+			this.object.lookAt( this.target );
+			this.object.position.set( 0, 5, 0 );
+		}
 
 		if ( this.freeze ) {
 

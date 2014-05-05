@@ -47,6 +47,13 @@ app.city = {
 		// DRAW	
 		this.renderer.render(this.scene, this.camera);
 		
+		// rotate uncollected artifacts
+		for(var i = 0; i < this.myobjects.length; i++) {
+			this.myobjects[i].rotation.x += 0.03;
+			this.myobjects[i].rotation.y += 0.1;
+			this.myobjects[i].rotation.z += 0.01;
+		}
+		
 	},
 	
 	setupThreeJS: function() {
@@ -57,7 +64,7 @@ app.city = {
 				// camera
 				//this.camera = new THREE.PerspectiveCamera( this.VIEW_ANGLE, this.ASPECT, this.NEAR, this.FAR );
 				this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-				this.camera.position.set( 5, 5, 0 );
+				this.camera.position.set( 0, 5, 0 );
 				this.camera.rotation.y = Math.PI / 180;
 				//this.camera.lookAt( this.scene.position );
 
@@ -72,18 +79,33 @@ app.city = {
 				this.controls.movementSpeed = 15;
 				this.controls.lookSpeed = .75;
 				this.controls.autoForward = false;
-			},
+	},
 			
 	setupWorld: function() {
-				var geo = new THREE.PlaneGeometry(2000, 2000, 40, 40);
-				var mat = new THREE.MeshPhongMaterial({color: 0x9db3b5, overdraw: true});
-				var floor = new THREE.Mesh(geo, mat);
-				floor.rotation.x = -0.5 * Math.PI;
+				// floor
+				var floorTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
+				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+				floorTexture.repeat.set( 10, 10 );
+				var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+				var floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+				var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+				floor.position.y = 0;
+				floor.rotation.x = Math.PI / 2;
 				floor.receiveShadow = true;
-				//this.scene.add(floor);
+				this.scene.add(floor);
+				
+				// helper axes
+				var axes = new THREE.AxisHelper(100);
+				this.scene.add( axes );	
 				
 				// add skybox
 				this.drawSkyBox();
+				
+				// add mansion
+				this.setupMansion();
+				
+				// add artifacts
+				this.setupArtifacts();
 				
 				// build city and add to scene //
 				// make a base cube geometry for all of the buildings
@@ -117,7 +139,8 @@ app.city = {
 				// add directional light and enable shadows //
 				// the "sun"
 				var light = new THREE.DirectionalLight(0xf9f1c2, 1);
-				light.position.set(850, 1200, 2450);
+				//light.position.set(850, 1200, 2450);
+				light.position.set(85,120,245);
 				light.castShadow = true;
 				light.shadowMapWidth = 2048;
 				light.shadowMapHeight = 2048;
@@ -125,29 +148,93 @@ app.city = {
 				var d = 1000; // d = 'distance'
 				// "near" and "far" of shadows and camera
 				light.shadowCameraLeft = d;
-				light.shadowCameraRight = -3;
+				light.shadowCameraRight = -d;
 				light.shadowCameraTop = d;
 				light.shadowCameraBottom = -d;
 				light.shadowCameraFar = 2500;
 				this.scene.add(light);
-			},
+	},
 			
-	drawSkyBox: function(){
-		// FLOOR
-		var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
-		floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-		floorTexture.repeat.set( 10, 10 );
-		var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-		var floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
-		var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-		floor.position.y = -0.5;
-		floor.rotation.x = Math.PI / 2;
-		this.scene.add(floor);
+	setupMansion: function(){
+		// define walls		
+		// geometry
+		var wallGeometry1 = new THREE.CubeGeometry( 20, 10, 0.5 );
+		// move pivot point to bottom of cube instead of center
+		wallGeometry1.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 5, 0 ) );
 		
-		// helper axes
-		var axes = new THREE.AxisHelper(100);
-		this.scene.add( axes );		
+		// material
+		var wallTexture1 = new THREE.ImageUtils.loadTexture( 'images/Cottage_Wall_Night.jpg' );
+		wallTexture1.wrapS = wallTexture1.wrapT = THREE.RepeatWrapping; 
+		wallTexture1.repeat.set( 3, 1 );
+		var wallMaterial1 = new THREE.MeshBasicMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
 		
+		// setup walls
+		var wall1 = new THREE.Mesh(wallGeometry1, wallMaterial1);
+		var wall2 = new THREE.Mesh(wallGeometry1, wallMaterial1);
+		var wall3 = new THREE.Mesh(wallGeometry1, wallMaterial1);
+		var wall4 = new THREE.Mesh(wallGeometry1, wallMaterial1);
+		var wall5 = new THREE.Mesh(wallGeometry1, wallMaterial1);
+		var wall6 = new THREE.Mesh(wallGeometry1, wallMaterial1);
+		
+		wall1.receiveShadow = wall2.receiveShadow = wall3.receiveShadow = wall4.receiveShadow = wall5.receiveShadow = wall6.receiveShadow = true;
+		wall1.castShadow = wall2.castShadow = wall3.castShadow = wall4.castShadow = wall5.castShadow = wall6.castShadow = true;
+		
+		// set positions
+		wall1.position.set( 5, 0, 14.75 );
+		wall2.position.set( -5, 0, 14.75 );
+		wall1.rotation.y = Math.PI / 2;
+		wall2.rotation.y = Math.PI / 2;
+		
+		wall3.position.set( 15, 0, 5 );
+		wall4.position.set( 15, 0, -5 );
+		wall5.position.set( -15, 0, 5 );
+		wall6.position.set( -15, 0, -5 );
+		
+		// add walls
+		this.scene.add(wall1);
+		this.scene.add(wall2);	
+		this.scene.add(wall3);	
+		this.scene.add(wall4);	
+		this.scene.add(wall5);	
+		this.scene.add(wall6);	
+	},
+	
+	setupArtifacts: function()
+	{
+		// define cube
+		// geometry
+		var cubeGeometry = new THREE.CubeGeometry( 1, 1, 1 );
+		
+		// materials
+		var cubeTexture1 = new THREE.ImageUtils.loadTexture( 'images/SquareRed.png' );
+		var cubeMaterial1 = new THREE.MeshBasicMaterial( { map: cubeTexture1, side: THREE.DoubleSide } );
+		var cubeTexture2 = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
+		var cubeMaterial2 = new THREE.MeshBasicMaterial( { map: cubeTexture2, side: THREE.DoubleSide } );
+		var cubeTexture3 = new THREE.ImageUtils.loadTexture( 'images/SquareGreen.png' );
+		var cubeMaterial3 = new THREE.MeshBasicMaterial( { map: cubeTexture3, side: THREE.DoubleSide } );
+		
+		// setup cubes
+		var cube1 = new THREE.Mesh(cubeGeometry, cubeMaterial1);
+		var cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial2);
+		var cube3 = new THREE.Mesh(cubeGeometry, cubeMaterial3);
+		
+		cube1.receiveShadow = cube1.castShadow = cube2.receiveShadow = cube2.castShadow = cube2.receiveShadow = cube2.castShadow = true;
+		
+		cube1.position.set( 15, 5, 0);
+		cube2.position.set( -15, 5, 0);
+		cube3.position.set( 0, 5, 15);
+		
+		// add cubes
+		this.scene.add(cube1);
+		this.scene.add(cube2);
+		this.scene.add(cube3);
+		
+		this.myobjects.push(cube1);
+		this.myobjects.push(cube2);
+		this.myobjects.push(cube3);
+	},
+			
+	drawSkyBox: function(){		
 		// skybox
 		var imagePrefix = "images/grimmnight-";//"images/dawnmountain-";
 		var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
