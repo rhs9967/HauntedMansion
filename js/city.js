@@ -54,12 +54,16 @@ app.city = {
 			this.myobjects[i].rotation.z += 0.01;
 		}
 		
+		
+		
 	},
 	
 	setupThreeJS: function() {
 				// scene
 				this.scene = new THREE.Scene();
 				//this.scene.fog = new THREE.FogExp2(0x9db3b5, 0.002);
+				
+				//document.addEventListener( 'mousedown', bind( this, this.onMouseDown ), false );
 				
 				// camera
 				//this.camera = new THREE.PerspectiveCamera( this.VIEW_ANGLE, this.ASPECT, this.NEAR, this.FAR );
@@ -233,6 +237,31 @@ app.city = {
 		this.myobjects.push(cube2);
 		this.myobjects.push(cube3);
 	},
+	
+	// Interactivity
+	/*
+	onMouseDown: function(event) {
+		event.preventDefault();
+		var projector = new THREE.Projector();
+		
+		// 2D point where we clicked on the screen
+		var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
+		
+		// 2D point converted to 3D point in world
+		projector.unprojectVector(vector, camera);
+		
+		// cast a ray from the camera to the 3D point we clicked on
+		var reaycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+		
+		var intersects = raycaster.intersectObjects([myobjects[0], myobjects[1], myobjects[2]);
+		
+		if (intersects.length > 0) {
+			intersects[ 0 ].object.material.transparent = true;
+			intersects[ 0 ].object.material.opacity = 0.3;
+		}
+	},*/
+	
+	// Drawing //
 			
 	drawSkyBox: function(){		
 		// skybox
@@ -256,6 +285,5 @@ app.city = {
 	drawPauseScreen: function(){
 		// do something pause-like if you want
 	}
-	
 	
 };
