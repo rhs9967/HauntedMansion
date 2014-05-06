@@ -18,6 +18,7 @@ app.city = {
 		scene: undefined,
 		camera: undefined,
 		myobjects: [],
+		invobjects: [],
 		paused: false,
 		dt: 1/60,
 		controls: undefined,
@@ -25,8 +26,12 @@ app.city = {
 		
     	init : function() {
 			console.log('init called');
+			
 			this.setupThreeJS();
 			this.setupWorld();
+			
+			//document.addEventListener( 'mousedown', bind( this, this.onMouseDown ), false );
+			
 			this.update();
     	},
     	
@@ -62,8 +67,6 @@ app.city = {
 				// scene
 				this.scene = new THREE.Scene();
 				//this.scene.fog = new THREE.FogExp2(0x9db3b5, 0.002);
-				
-				//document.addEventListener( 'mousedown', bind( this, this.onMouseDown ), false );
 				
 				// camera
 				//this.camera = new THREE.PerspectiveCamera( this.VIEW_ANGLE, this.ASPECT, this.NEAR, this.FAR );
@@ -160,7 +163,7 @@ app.city = {
 	},
 			
 	setupMansion: function(){
-		// define walls		
+		// walls //	
 		// geometry
 		var wallGeometry1 = new THREE.CubeGeometry( 20, 10, 0.5 );
 		// move pivot point to bottom of cube instead of center
@@ -200,7 +203,11 @@ app.city = {
 		this.scene.add(wall3);	
 		this.scene.add(wall4);	
 		this.scene.add(wall5);	
-		this.scene.add(wall6);	
+		this.scene.add(wall6);
+		
+		
+		// pedestals //
+		
 	},
 	
 	setupArtifacts: function()
@@ -239,27 +246,57 @@ app.city = {
 	},
 	
 	// Interactivity
-	/*
 	onMouseDown: function(event) {
 		event.preventDefault();
 		var projector = new THREE.Projector();
+		var tube;
 		
 		// 2D point where we clicked on the screen
 		var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
 		
 		// 2D point converted to 3D point in world
-		projector.unprojectVector(vector, camera);
+		projector.unprojectVector(vector, this.camera);
 		
 		// cast a ray from the camera to the 3D point we clicked on
-		var reaycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+		var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
 		
-		var intersects = raycaster.intersectObjects([myobjects[0], myobjects[1], myobjects[2]);
+		var intersects = raycaster.intersectObjects(this.myobjects);
 		
 		if (intersects.length > 0) {
-			intersects[ 0 ].object.material.transparent = true;
-			intersects[ 0 ].object.material.opacity = 0.3;
+			if(intersects[ 0 ].distance < 5){
+				// put artifact in inventory
+				this.invobjects.push(intersects[0].object);
+				
+				// remove from scene
+				this.scene.remove(intersects[0].object);
+				//intersects[ 0 ].object.material.transparent = true;
+				//intersects[ 0 ].object.material.opacity = 0.3;
+			}
+			
+			var points = [];
+			var origin = raycaster.ray.origin.clone();
+			//console.log(origin);
+			//points.push(new THREE.Vector3(-30, 39.8, 30));
+			points.push(origin);
+			points.push(intersects[0].point);
+			
+			var mat = new THREE.MeshBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.6});
+            var tubeGeometry = new THREE.TubeGeometry(new THREE.SplineCurve3(points), 60, 0.001);
+
+            //if (tube) this.scene.remove(tube);
+
+            //if (this.controls.showRay) {
+				tube = new THREE.Mesh(tubeGeometry, mat);
+				////tube.position.x = this.camera.position.x;
+				//tube.position.y = 10;
+				//tube.position.z = this.camera.position.z;
+				//this.scene.add(tube);
+			//}
+			
+			//console.log("point.x="+intersects.[0].point.x);
+			//console.log("point.y="+intersects.[0].point.y);
 		}
-	},*/
+	},
 	
 	// Drawing //
 			

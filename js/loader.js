@@ -26,6 +26,9 @@ app.paused = false;
 // key daemon array
 app.keydown = [];
 
+// mouse bool
+//app.isMouseDown = false;
+
 (function(){
 	var queue = new createjs.LoadQueue(false);
 	queue.on("fileload", handleFileLoad, this);
@@ -52,6 +55,11 @@ app.keydown = [];
 	
 	function handleComplete(e){
 		app.city.init();
+	}
+	
+	function mouseDown(e){
+		console.log("mousedown");
+		app.city.onMouseDown(e);
 	}
 	
 	// when the loading is complete, this function will be called
@@ -83,7 +91,6 @@ app.keydown = [];
 				console.log("keyup=" + e.keyCode);
 				app.keydown[e.keyCode] = false;
 			});
-			
 			
 			// start game
 			app.city.init();

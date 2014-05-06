@@ -87,7 +87,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		event.preventDefault();
 		event.stopPropagation();
-
+		/*
 		if ( this.activeLook ) {
 
 			switch ( event.button ) {
@@ -98,7 +98,12 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			}
 
 		}
-
+		*/
+		
+		app.city.onMouseDown(event);
+		
+		
+		
 		this.mouseDragOn = true;
 
 	};
@@ -107,7 +112,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		event.preventDefault();
 		event.stopPropagation();
-
+		/*
 		if ( this.activeLook ) {
 
 			switch ( event.button ) {
@@ -118,7 +123,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			}
 
 		}
-
+		*/
 		this.mouseDragOn = false;
 
 	};
