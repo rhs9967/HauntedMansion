@@ -28,10 +28,7 @@ app.city = {
 			console.log('init called');
 			
 			this.setupThreeJS();
-			this.setupWorld();
-			
-			//document.addEventListener( 'mousedown', bind( this, this.onMouseDown ), false );
-			
+			this.setupWorld();			
 			this.update();
     	},
     	
@@ -54,9 +51,10 @@ app.city = {
 		
 		// rotate uncollected artifacts
 		for(var i = 0; i < this.myobjects.length; i++) {
-			this.myobjects[i].rotation.x += 0.03;
-			this.myobjects[i].rotation.y += 0.1;
-			this.myobjects[i].rotation.z += 0.01;
+			this.myobjects[i].update(this.dt);
+			//this.myobjects[i].rotation.x += 0.03;
+			//this.myobjects[i].rotation.y += 0.1;
+			//this.myobjects[i].rotation.z += 0.01;
 		}
 		
 		
@@ -176,6 +174,7 @@ app.city = {
 		var wallMaterial1 = new THREE.MeshBasicMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
 		
 		// setup walls
+		/*
 		var wall1 = new THREE.Mesh(wallGeometry1, wallMaterial1);
 		var wall2 = new THREE.Mesh(wallGeometry1, wallMaterial1);
 		var wall3 = new THREE.Mesh(wallGeometry1, wallMaterial1);
@@ -192,10 +191,19 @@ app.city = {
 		wall1.rotation.y = Math.PI / 2;
 		wall2.rotation.y = Math.PI / 2;
 		
+		
 		wall3.position.set( 15, 0, 5 );
 		wall4.position.set( 15, 0, -5 );
 		wall5.position.set( -15, 0, 5 );
 		wall6.position.set( -15, 0, -5 );
+		*/
+		
+		var wall1 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
+		var wall2 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
+		var wall3 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
+		var wall4 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
+		var wall5 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
+		var wall6 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
 		
 		// add walls
 		this.scene.add(wall1);
@@ -203,7 +211,7 @@ app.city = {
 		this.scene.add(wall3);	
 		this.scene.add(wall4);	
 		this.scene.add(wall5);	
-		this.scene.add(wall6);
+		this.scene.add(wall6);	
 		
 		
 		// pedestals //
@@ -215,14 +223,23 @@ app.city = {
 		// define cube
 		// geometry
 		var cubeGeometry = new THREE.CubeGeometry( 1, 1, 1 );
+		var cubeTexture1 = new THREE.ImageUtils.loadTexture( 'images/SquareRed.png' );
+		var cubeTexture2 = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
+		var cubeTexture3 = new THREE.ImageUtils.loadTexture( 'images/SquareGreen.png' );
+		var cubeMaterial1 = new THREE.MeshBasicMaterial( { map: cubeTexture1, side: THREE.DoubleSide } );
+		var cubeMaterial2 = new THREE.MeshBasicMaterial( { map: cubeTexture2, side: THREE.DoubleSide } );
+		var cubeMaterial3 = new THREE.MeshBasicMaterial( { map: cubeTexture3, side: THREE.DoubleSide } );
 		
 		// materials
+		/*
 		var cubeTexture1 = new THREE.ImageUtils.loadTexture( 'images/SquareRed.png' );
 		var cubeMaterial1 = new THREE.MeshBasicMaterial( { map: cubeTexture1, side: THREE.DoubleSide } );
 		var cubeTexture2 = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
 		var cubeMaterial2 = new THREE.MeshBasicMaterial( { map: cubeTexture2, side: THREE.DoubleSide } );
 		var cubeTexture3 = new THREE.ImageUtils.loadTexture( 'images/SquareGreen.png' );
 		var cubeMaterial3 = new THREE.MeshBasicMaterial( { map: cubeTexture3, side: THREE.DoubleSide } );
+		
+		
 		
 		// setup cubes
 		var cube1 = new THREE.Mesh(cubeGeometry, cubeMaterial1);
@@ -234,11 +251,17 @@ app.city = {
 		cube1.position.set( 15, 5, 0);
 		cube2.position.set( -15, 5, 0);
 		cube3.position.set( 0, 5, 15);
+		*/
+		
+		var cube1 = new app.Artifact(cubeGeometry, cubeMaterial1, 15, 5, 0);
+		var cube2 = new app.Artifact(cubeGeometry, cubeMaterial2, -15, 5, 0);
+		var cube3 = new app.Artifact(cubeGeometry, cubeMaterial3, 0, 5, 15);
+		//cube1.cube.position.set( 15, 5, 0);
 		
 		// add cubes
-		this.scene.add(cube1);
-		this.scene.add(cube2);
-		this.scene.add(cube3);
+		this.scene.add(cube1.cube);
+		this.scene.add(cube2.cube);
+		this.scene.add(cube3.cube);
 		
 		this.myobjects.push(cube1);
 		this.myobjects.push(cube2);
