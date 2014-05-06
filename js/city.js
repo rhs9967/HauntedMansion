@@ -283,18 +283,22 @@ app.city = {
 		// cast a ray from the camera to the 3D point we clicked on
 		var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
 		
-		var intersects = raycaster.intersectObjects(this.myobjects);
+		var objectArray = [];
 		
-		if (intersects.length > 0) {
-			if(intersects[ 0 ].distance < 5){
-				// put artifact in inventory
-				this.invobjects.push(intersects[0].object);
-				
-				// remove from scene
-				this.scene.remove(intersects[0].object);
-				//intersects[ 0 ].object.material.transparent = true;
-				//intersects[ 0 ].object.material.opacity = 0.3;
-			}
+		for(var i=0; i < this.myobjects.length; i++) {
+			objectArray.push(this.myobjects[i].cube);
+		}
+		
+		var intersects = raycaster.intersectObjects(objectArray);
+		
+		if (intersects.length > 0 && intersects[ 0 ].distance < 5) {
+			// remove from scene
+			this.scene.remove(intersects[0].object);
+			// put artifact in inventory
+			this.invobjects.push(intersects[0].object);		
+			
+			//intersects[ 0 ].object.material.transparent = true;
+			//intersects[ 0 ].object.material.opacity = 0.3;
 			
 			var points = [];
 			var origin = raycaster.ray.origin.clone();
@@ -309,10 +313,7 @@ app.city = {
             //if (tube) this.scene.remove(tube);
 
             //if (this.controls.showRay) {
-				tube = new THREE.Mesh(tubeGeometry, mat);
-				////tube.position.x = this.camera.position.x;
-				//tube.position.y = 10;
-				//tube.position.z = this.camera.position.z;
+				//tube = new THREE.Mesh(tubeGeometry, mat);
 				//this.scene.add(tube);
 			//}
 			

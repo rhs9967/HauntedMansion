@@ -99,7 +99,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		}
 		*/
-		
+		console.log("mousedown");
 		app.city.onMouseDown(event);
 		
 		
