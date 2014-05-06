@@ -8,9 +8,9 @@ var app = app || {};
 app.Wall = function(){
 
 	// creates a new artifact based off of the cube geometry and which color it should be that is passed in
-	function Wall(cubeGeometry, cubeMaterial, x, y, z){
+	function Wall(geometry, material, x, y, z){
 		
-		this.cube = new THREE.Mesh(cubeGeometry,cubeMaterial);
+		this.cube = new THREE.Mesh(geometry,material);
 		this.cube.receiveShadow = true;
 		this.cube.castShadow = true;
 		

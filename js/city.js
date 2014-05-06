@@ -198,20 +198,22 @@ app.city = {
 		wall6.position.set( -15, 0, -5 );
 		*/
 		
-		var wall1 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
-		var wall2 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
-		var wall3 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
-		var wall4 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
-		var wall5 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
-		var wall6 = new app.Artifact(wallGeometry1, wallMaterial1, 15, 5, 0);
+		var wall1 = new app.Wall(wallGeometry1, wallMaterial1, 5, 0, 14.75);
+		var wall2 = new app.Wall(wallGeometry1, wallMaterial1, -5, 0, 14.75);
+		wall1.cube.rotation.y = Math.PI / 2;
+		wall2.cube.rotation.y = Math.PI / 2;
+		var wall3 = new app.Wall(wallGeometry1, wallMaterial1, 15, 0, 5);
+		var wall4 = new app.Wall(wallGeometry1, wallMaterial1, 15, 0, -5);
+		var wall5 = new app.Wall(wallGeometry1, wallMaterial1, -15, 0, 5);
+		var wall6 = new app.Wall(wallGeometry1, wallMaterial1, -15, 0, -5);
 		
 		// add walls
-		this.scene.add(wall1);
-		this.scene.add(wall2);	
-		this.scene.add(wall3);	
-		this.scene.add(wall4);	
-		this.scene.add(wall5);	
-		this.scene.add(wall6);	
+		this.scene.add(wall1.cube);
+		this.scene.add(wall2.cube);	
+		this.scene.add(wall3.cube);	
+		this.scene.add(wall4.cube);	
+		this.scene.add(wall5.cube);	
+		this.scene.add(wall6.cube);	
 		
 		
 		// pedestals //

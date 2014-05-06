@@ -36,6 +36,8 @@ app.keydown = [];
 	queue.loadFile("js/lib/three.min.js");
 	queue.loadFile("js/lib/FirstPersonControls.js");
 	queue.loadFile("js/city.js");
+	queue.loadFile("js/artifact.js");
+	queue.loadFile("js/wall.js");
 	
 	// skybox files
 	queue.loadFile("js/Detector.js");
