@@ -17,6 +17,7 @@ app.city = {
 		renderer: undefined,
 		scene: undefined,
 		camera: undefined,
+		character: undefined,
 		myobjects: [],
 		invobjects: [],
 		paused: false,
@@ -71,6 +72,19 @@ app.city = {
 				this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
 				this.camera.position.set( 0, 5, 0 );
 				this.camera.rotation.y = Math.PI / 180;
+				
+				// set up the cube that the camera will rest on
+				var cubeGeometry = new THREE.CubeGeometry( 1, 1, 1 );
+				var cubeTexture = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
+				var cubeMaterial = new THREE.MeshBasicMaterial( { map: cubeTexture, side: THREE.DoubleSide } );
+				this.person = new THREE.Mesh(cubeGeometry,cubeMaterial);
+				this.person.receiveShadow = true;
+				this.person.castShadow = true;
+				
+				this.person.position.set( 0, 5, 0);
+				this.scene.add(this.person);
+				
+				
 				//this.camera.lookAt( this.scene.position );
 
 				// renderer
@@ -255,6 +269,7 @@ app.city = {
 		cube3.position.set( 0, 5, 15);
 		*/
 		
+		// creates 3 new artifacts based off imported geometry, material and position
 		var cube1 = new app.Artifact(cubeGeometry, cubeMaterial1, 15, 5, 0);
 		var cube2 = new app.Artifact(cubeGeometry, cubeMaterial2, -15, 5, 0);
 		var cube3 = new app.Artifact(cubeGeometry, cubeMaterial3, 0, 5, 15);
