@@ -105,11 +105,11 @@ app.city = {
 				var floorTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
 				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 				floorTexture.repeat.set( 10, 10 );
-				var floorMaterial = new THREE.MeshLambertMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+				var floorMaterial = new THREE.MeshLambertMaterial( { map: floorTexture, side: THREE.FrontSide } );
 				var floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
 				var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 				floor.position.y = 0;
-				floor.rotation.x = Math.PI / 2;
+				floor.rotation.x = -Math.PI / 2;
 				floor.receiveShadow = true;
 				this.scene.add(floor);
 				
@@ -117,7 +117,7 @@ app.city = {
 				var ceilingTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
 				ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping; 
 				ceilingTexture.repeat.set( 10, 10 );
-				var ceilingMaterial = new THREE.MeshLambertMaterial( { map: ceilingTexture, side: THREE.DoubleSide } );
+				var ceilingMaterial = new THREE.MeshLambertMaterial( { map: ceilingTexture, side: THREE.FrontSide } );
 				var ceilingGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
 				var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
 				ceiling.position.y = 10;
@@ -141,81 +141,36 @@ app.city = {
 				// once done adding to myobjects, set object.id for each object
 				for(var i=0; i < this.myobjects.length; i++) {
 					this.myobjects[i].cube.id = i;
-				}
-				
-				/*
-				// build city and add to scene //
-				// make a base cube geometry for all of the buildings
-				var geometry = new THREE.CubeGeometry( 1, 1, 1 );
-				// move pivot point to bottom of cube instead of center
-				geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-				
-				var cityGeometry = new THREE.Geometry();
-				for (var i = 0; i < 300; i++) {
-					var building = new THREE.Mesh(geometry.clone());
-					building.position.x = Math.floor( Math.random() * 200 - 100 ) * 4;
-					building.position.z = Math.floor( Math.random() * 200 - 100 ) * 4;
-					building.scale.x = Math.pow(Math.random(), 2) * 50 + 10;
-					building.scale.y = Math.pow(Math.random(), 3) * building.scale.x * 8 + 8;
-					building.scale.z = building.scale.x;
-					// merge!
-					// we have a single geometry, so it renders faster
-					THREE.GeometryUtils.merge(cityGeometry, building);
-				}
-				
-				var material = new THREE.MeshPhongMaterial({color: 0xffcccc});
-				// uncomment these 2 lines for a semi-transparent city
-				//material.transparent = true;
-				//material.opacity = 0.8;
-				
-				var city = new THREE.Mesh(cityGeometry, material);
-				city.castShadow = true;
-				city.receiveShadow = true;
-				this.scene.add(city);
-				*/				
+				}			
 				
 				// add subtle ambient lighting
-				var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+				var ambientLight = new THREE.AmbientLight(0x0f0f0f);
+				ambientLight.intensity = 1;
 				this.scene.add(ambientLight);
+
 				
-				// spotlight
-				var spotLight = new THREE.SpotLight( 0xE67451 );
-				spotLight.position.set( 0, 15, 0);
-				spotLight.castShadow = true;
-				//spotLight.shadowCameraNear = 0;
-				//spotLight.shadowCameraFar = 200;
-				//spotLight.shadowCameraFov = 130;
-				//spotLight.target = myobjects[3].cube;
-				//spotLight.distance = 0;
-				this.scene.add( spotLight );
-				
-				
-				var spotLight1 = new THREE.SpotLight( 0xE67451 );
-				spotLight1.position.set( 0, 15, 15);
+				var spotLight1 = new THREE.SpotLight( 0xffffff );
+				spotLight1.position.set(0, 10, 0);
+
 				spotLight1.castShadow = true;
-				//spotLight1.shadowCameraNear = 0;
-				//spotLight1.shadowCameraFar = 200;
-				//spotLight1.shadowCameraFov = 130;
-				//spotLight.target = myobjects;
-				//spotLight1.distance = 0;
-				this.scene.add( spotLight1 );
+
+				spotLight1.shadowMapWidth = 1024;
+				spotLight1.shadowMapHeight = 1024;
+
+				spotLight1.shadowCameraNear = 1;
+				spotLight1.shadowCameraFar = 50;
+				//spotLight1.shadowCameraFov = 60;
 				
-				var spotLight2 = new THREE.SpotLight( 0xE67451 );
-				spotLight2.position.set( -15, 15, 0);
-				spotLight2.castShadow = true;
-				//spotLight2.shadowCameraNear = 0;
-				//spotLight2.shadowCameraFar = 200;
-				//spotLight2.shadowCameraFov = 130;
-				//spotLight.target = myobjects;
-				//spotLight2.distance = 0;
-				this.scene.add( spotLight2 );
+				spotLight1.shadowCameraVisible = true;
+
+				this.scene.add( spotLight1 );
 				
 				
 				// add directional light and enable shadows //
 				// the "sun"
 				var dirlight = new THREE.DirectionalLight(0xf9f1c2, 0.75);
-				//light.position.set(850, 1200, 2450);
-				dirlight.position.set(0,1,0);
+				dirlight.position.set(850, 1100, 2450);
+				//dirlight.position.set(0,5,30);
 				//dirlight.target = this.myobjects[1].cube;
 				dirlight.castShadow = true;
 				dirlight.shadowMapWidth = 2048;
@@ -228,7 +183,8 @@ app.city = {
 				dirlight.shadowCameraTop = d;
 				dirlight.shadowCameraBottom = -d;
 				dirlight.shadowCameraFar = 2500;
-				this.scene.add(dirlight);
+				dirlight.shadowCameraVisible = true;
+				//this.scene.add(dirlight);
 	},
 			
 	setupMansion: function(){
@@ -240,9 +196,10 @@ app.city = {
 		
 		// material
 		var wallTexture1 = new THREE.ImageUtils.loadTexture( 'images/Cottage_Wall_Night.jpg' );
-		wallTexture1.wrapS = wallTexture1.wrapT = THREE.RepeatWrapping; 
+		//wallTexture1.wrapS = wallTexture1.wrapT = THREE.RepeatWrapping; 
+		wallTexture1.wrapS = THREE.RepeatWrapping;
 		wallTexture1.repeat.set( 3, 1 );
-		var wallMaterial1 = new THREE.MeshPhongMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
+		var wallMaterial1 = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: wallTexture1, wrapAround: true } );
 		//var wallMaterial1 = new THREE.MeshLambertMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
 		
 		// setup walls
@@ -295,7 +252,7 @@ app.city = {
 		pedGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 2, 0 ) );
 		
 		// material
-		var pedMaterial = new THREE.MeshPhongMaterial({color: 0xffcccc});
+		var pedMaterial = new THREE.MeshLambertMaterial({color: 0x8B4513});
 		
 		var pedestal1 = new app.Pedestal(pedGeometry, pedMaterial, -10, 0, -30);
 		var pedestal2 = new app.Pedestal(pedGeometry, pedMaterial, 0, 0, -30);
@@ -424,7 +381,7 @@ app.city = {
 				// put artifact in inventory
 				this.invobjects.push(obj);
 				
-				// check if it was placed on a pedestal
+				// check if it was previously on a pedestal
 				if (obj.pedestalId >= 0) {
 					// disconnect the two, pedestal first since we have access to artifact locally
 					this.myobjects[obj.pedestalId].artifactId = -1;
