@@ -105,7 +105,7 @@ app.city = {
 				var floorTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
 				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 				floorTexture.repeat.set( 10, 10 );
-				var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+				var floorMaterial = new THREE.MeshLambertMaterial( { map: floorTexture, side: THREE.DoubleSide } );
 				var floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
 				var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 				floor.position.y = 0;
@@ -113,9 +113,21 @@ app.city = {
 				floor.receiveShadow = true;
 				this.scene.add(floor);
 				
+				// ceiling
+				var ceilingTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
+				ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping; 
+				ceilingTexture.repeat.set( 10, 10 );
+				var ceilingMaterial = new THREE.MeshLambertMaterial( { map: ceilingTexture, side: THREE.DoubleSide } );
+				var ceilingGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+				var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+				ceiling.position.y = 10;
+				ceiling.rotation.x = Math.PI / 2;
+				ceiling.receiveShadow = true;
+				this.scene.add(ceiling);
+				
 				// helper axes
 				var axes = new THREE.AxisHelper(100);
-				this.scene.add( axes );	
+				//this.scene.add( axes );	
 				
 				// add skybox
 				this.drawSkyBox();
@@ -126,6 +138,12 @@ app.city = {
 				// add artifacts
 				this.setupArtifacts();
 				
+				// once done adding to myobjects, set object.id for each object
+				for(var i=0; i < this.myobjects.length; i++) {
+					this.myobjects[i].cube.id = i;
+				}
+				
+				/*
 				// build city and add to scene //
 				// make a base cube geometry for all of the buildings
 				var geometry = new THREE.CubeGeometry( 1, 1, 1 );
@@ -153,25 +171,64 @@ app.city = {
 				var city = new THREE.Mesh(cityGeometry, material);
 				city.castShadow = true;
 				city.receiveShadow = true;
-				//this.scene.add(city);			
+				this.scene.add(city);
+				*/				
+				
+				// add subtle ambient lighting
+				var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+				this.scene.add(ambientLight);
+				
+				// spotlight
+				var spotLight = new THREE.SpotLight( 0xE67451 );
+				spotLight.position.set( 0, 15, 0);
+				spotLight.castShadow = true;
+				//spotLight.shadowCameraNear = 0;
+				//spotLight.shadowCameraFar = 200;
+				//spotLight.shadowCameraFov = 130;
+				//spotLight.target = myobjects[3].cube;
+				//spotLight.distance = 0;
+				this.scene.add( spotLight );
+				
+				
+				var spotLight1 = new THREE.SpotLight( 0xE67451 );
+				spotLight1.position.set( 0, 15, 15);
+				spotLight1.castShadow = true;
+				//spotLight1.shadowCameraNear = 0;
+				//spotLight1.shadowCameraFar = 200;
+				//spotLight1.shadowCameraFov = 130;
+				//spotLight.target = myobjects;
+				//spotLight1.distance = 0;
+				this.scene.add( spotLight1 );
+				
+				var spotLight2 = new THREE.SpotLight( 0xE67451 );
+				spotLight2.position.set( -15, 15, 0);
+				spotLight2.castShadow = true;
+				//spotLight2.shadowCameraNear = 0;
+				//spotLight2.shadowCameraFar = 200;
+				//spotLight2.shadowCameraFov = 130;
+				//spotLight.target = myobjects;
+				//spotLight2.distance = 0;
+				this.scene.add( spotLight2 );
+				
 				
 				// add directional light and enable shadows //
 				// the "sun"
-				var light = new THREE.DirectionalLight(0xf9f1c2, 1);
+				var dirlight = new THREE.DirectionalLight(0xf9f1c2, 0.75);
 				//light.position.set(850, 1200, 2450);
-				light.position.set(85,120,245);
-				light.castShadow = true;
-				light.shadowMapWidth = 2048;
-				light.shadowMapHeight = 2048;
+				dirlight.position.set(0,1,0);
+				//dirlight.target = this.myobjects[1].cube;
+				dirlight.castShadow = true;
+				dirlight.shadowMapWidth = 2048;
+				dirlight.shadowMapHeight = 2048;
 				
 				var d = 1000; // d = 'distance'
 				// "near" and "far" of shadows and camera
-				light.shadowCameraLeft = d;
-				light.shadowCameraRight = -d;
-				light.shadowCameraTop = d;
-				light.shadowCameraBottom = -d;
-				light.shadowCameraFar = 2500;
-				this.scene.add(light);
+				dirlight.shadowCameraLeft = d;
+				dirlight.shadowCameraRight = -d;
+				dirlight.shadowCameraTop = d;
+				dirlight.shadowCameraBottom = -d;
+				dirlight.shadowCameraFar = 2500;
+				this.scene.add(dirlight);
 	},
 			
 	setupMansion: function(){
@@ -185,7 +242,8 @@ app.city = {
 		var wallTexture1 = new THREE.ImageUtils.loadTexture( 'images/Cottage_Wall_Night.jpg' );
 		wallTexture1.wrapS = wallTexture1.wrapT = THREE.RepeatWrapping; 
 		wallTexture1.repeat.set( 3, 1 );
-		var wallMaterial1 = new THREE.MeshBasicMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
+		var wallMaterial1 = new THREE.MeshPhongMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
+		//var wallMaterial1 = new THREE.MeshLambertMaterial( { map: wallTexture1, side: THREE.DoubleSide } );
 		
 		// setup walls
 		/*
@@ -231,7 +289,27 @@ app.city = {
 		
 		
 		// pedestals //
+		// geometry
+		var pedGeometry = new THREE.CubeGeometry( 1, 4, 1 );
+		// move pivot point to bottom of cube instead of center
+		pedGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 2, 0 ) );
 		
+		// material
+		var pedMaterial = new THREE.MeshPhongMaterial({color: 0xffcccc});
+		
+		var pedestal1 = new app.Pedestal(pedGeometry, pedMaterial, -10, 0, -30);
+		var pedestal2 = new app.Pedestal(pedGeometry, pedMaterial, 0, 0, -30);
+		var pedestal3 = new app.Pedestal(pedGeometry, pedMaterial, 10, 0, -30);
+		
+		// add pedestals
+		this.scene.add(pedestal1.cube);
+		this.scene.add(pedestal2.cube);
+		this.scene.add(pedestal3.cube);
+		
+		// add to clickable objects
+		this.myobjects.push(pedestal1);
+		this.myobjects.push(pedestal2);
+		this.myobjects.push(pedestal3);
 	},
 	
 	setupArtifacts: function()
@@ -280,6 +358,7 @@ app.city = {
 		this.scene.add(cube2.cube);
 		this.scene.add(cube3.cube);
 		
+		// add to clickable objects
 		this.myobjects.push(cube1);
 		this.myobjects.push(cube2);
 		this.myobjects.push(cube3);
@@ -308,12 +387,51 @@ app.city = {
 		
 		var intersects = raycaster.intersectObjects(objectArray);
 		
-		if (intersects.length > 0 && intersects[ 0 ].distance < 5) {
-			// remove from scene
-			this.scene.remove(intersects[0].object);
-			// put artifact in inventory
-			this.invobjects.push(intersects[0].object);		
-			
+		if (intersects.length > 0 && intersects[ 0 ].distance < 7) {
+			// locate instance in myobjects array
+			var obj = this.myobjects[intersects[0].object.id];
+		
+			// if a pedestal
+			if (obj.isPedestal){
+				// if there is an artifact in place
+				if (obj.artifactId >= 0) {
+					// ignore
+					return;
+					
+					// remove artifact from scene
+					//this.scene.remove(this.myobjects[obj.artifactId].cube);					
+					// put artifact in inventory
+					//this.invobjects.push(this.myobjects[obj.artifactId]);
+				} else {
+					// place first artifact in inventory on pedestal
+					obj.artifactId = this.invobjects[0].cube.id;
+					this.invobjects[0].pedestalId = obj.cube.id;
+					
+					// set artifact's position to match pedestal's
+					this.myobjects[obj.artifactId].cube.position.set(obj.cube.position.x, 5, obj.cube.position.z);
+					
+					// update inventory
+					// splice( removes elements starting at this index, number of elements)
+					// returns new array containing elements that have been removed
+					this.invobjects.splice(0, 1);
+					
+					// add artifact to scene
+					this.scene.add(this.myobjects[obj.artifactId].cube);
+				}
+			} else {
+				// remove artifact from scene
+				this.scene.remove(obj.cube);
+				// put artifact in inventory
+				this.invobjects.push(obj);
+				
+				// check if it was placed on a pedestal
+				if (obj.pedestalId >= 0) {
+					// disconnect the two, pedestal first since we have access to artifact locally
+					this.myobjects[obj.pedestalId].artifactId = -1;
+					obj.pedestalId = -1;
+				}
+			}		
+			/*
 			//intersects[ 0 ].object.material.transparent = true;
 			//intersects[ 0 ].object.material.opacity = 0.3;
 			
@@ -336,6 +454,7 @@ app.city = {
 			
 			//console.log("point.x="+intersects.[0].point.x);
 			//console.log("point.y="+intersects.[0].point.y);
+			*/
 		}
 	},
 	

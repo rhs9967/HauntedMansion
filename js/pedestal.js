@@ -1,14 +1,15 @@
-// artifact.js
+// pedestal.js
 // dependencies: none
-// coded by Zach Whitman on 5/6
+// coded by Robert Schrupp on 5/6
+// code from artifact.js and wall.js borrowed from Zach Whitman
 
 "use strict";
 var app = app || {};
 
-app.Artifact = function(){
+app.Pedestal = function(){
 
 	// creates a new artifact based off of the cube geometry and which color it should be that is passed in
-	function Artifact(geometry, material, x, y, z){
+	function Pedestal(geometry, material, x, y, z){
 		
 		this.cube = new THREE.Mesh(geometry,material);
 		this.cube.receiveShadow = true;
@@ -16,23 +17,20 @@ app.Artifact = function(){
 		
 		this.cube.position.set( x, y, z);
 		
-		this.pedestalId = -1;
+		this.artifactId = -1;
+		this.isPedestal = true;
 		
-	}; // end Artifact Constructor
+	}; // end Pedestal Constructor
 	
 	
-	var a = Artifact.prototype;
-	
-	// updates the cube's posistion
+	var a = Pedestal.prototype;
+		
 	a.update = function(dt) {
-		this.cube.rotation.x += 0.03;
-		this.cube.rotation.y += 0.1;
-		this.cube.rotation.z += 0.01;
 	};
 	
 	
 
 
-	return Artifact; 
+	return Pedestal; 
 	
 }();
