@@ -6,65 +6,90 @@ var app = app || {};
 
 app.mansion = {
 		// Constant Properties
-		LENGTH = 100;
-		HEIGHT = 10;
-		WIDTH = 100;
+		LENGTH: 100,
+		HEIGHT: 10,
+		WIDTH: 100,
+		NUMBER_OF_WALLS: 20;
+		WALL_LENGTH: 10;
+		WALL_WIDTH: 1;
 		
 		// Variable Properties
-		scene = app.city.scene;
+		scene: undefined,
+		mansion: undefined,
+		walls: [],
+		
 	
 		init : function() {
+			this.scene = app.city.scene;
 			createMansion();
     	},
 	
 	// functions //
 	
 	createMansion : function() {
-		// floor
-			var floorTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
-			floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-			floorTexture.repeat.set( 10, 10 );
-			var floorMaterial = new THREE.MeshLambertMaterial( { map: floorTexture, side: THREE.FrontSide } );
-			var floorGeometry = new THREE.PlaneGeometry(LENGTH, WIDTH, 10, 10);
-			var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-			floor.position.y = 0;
-			floor.rotation.x = -Math.PI / 2;
-			floor.receiveShadow = true;
-			this.scene.add(floor);
+		// add planes
+		this.addPlane(LENGTH, 0, WIDTH, 'images/WoodFloor1.jpg',-Math.PI/2); // floor
+		this.addPlane(LENGTH, HEIGHT, WIDTH, 'images/WoodFloor1.jpg',Math.PI/2); // ceiling
 			
-			// ceiling
-			var ceilingTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
-			ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping; 
-			ceilingTexture.repeat.set( 10, 10 );
-			var ceilingMaterial = new THREE.MeshLambertMaterial( { map: ceilingTexture, side: THREE.FrontSide } );
-			var ceilingGeometry = new THREE.PlaneGeometry(LENGTH, WIDTH, 10, 10);
-			var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
-			ceiling.position.y = HEIGHT;
-			ceiling.rotation.x = Math.PI / 2;
-			ceiling.receiveShadow = true;
-			this.scene.add(ceiling);
-			
-			// generate interior
+		// create mansion //
+		
+		// make walls
+		for (var i = 0; i < NUMBER_OF_WALLS; i++) {
+			var x = Math.floor( Math.random() * LENGTH);
+			var z = Math.floor( Math.random() * WIDTH);
+			//var rot = Math.floor( Math.random(Math.PI*2, 0) * 
+			this.makeWall(WALL_LENGTH, HEIGTH, WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, 
+		}
+		
+		// merge all walls into a single geometry
+		var mansionGeometry = new Three.Geometry();
+		for (var i = 0; i < this.walls.length; i++) {
+			var wall = this.
+		}
 			
 	},
 	
-	// Add Wall
-	addWall : function(l, h, w, texturePath, x, y, z, rotation) {
+	// Add a plane to the scene
+	addPlane : function(l, h, w, texturePath, rotation) {
+		// texture
+		var texture = new THREE.ImageUtils.loadTexture( texturePath );
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+		texture.repeat.set( 10, 10 );
+		
+		// material & geometry then mesh
+		var material = new THREE.MeshLambertMaterial( { map: texture, side: THREE.FrontSide } );
+		var geometry = new THREE.PlaneGeometry(l, w, 10, 10);
+		var plane = new THREE.Mesh(geometry, material);
+		
+		// final adjustments then add to scene
+		plane.position.y = h;
+		plane.rotation.x = rotation;
+		plane.receiveShadow = true;
+		this.scene.add(plane);
+	},
+	
+	// Make a Wall
+	makeWall : function(l, h, w, texturePath, x, y, z, rotation) {
 		// walls //	
 		// geometry
-		var wallGeometry = new THREE.CubeGeometry( l, h, w );
+		var geometry = new THREE.CubeGeometry( l, h, w );
 		// move pivot point to bottom of cube instead of center
-		wallGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, h/2, 0 ) );
+		geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, h/2, 0 ) );
 		
-		// material
-		var wallTexture = new THREE.ImageUtils.loadTexture( texturePath );
-		wallTexture.wrapS = THREE.RepeatWrapping;
-		var wallMaterial = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: wallTexture, wrapAround: true } );
+		// texture & material
+		var texture = new THREE.ImageUtils.loadTexture( texturePath );
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.repeat.set( 1, 1);
+		var material = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: texture, wrapAround: true } );
 		
-		var wall = new app.Wall(wallGeometry, wallMaterial, x, y, z);
+		// create and setup wall
+		var wall = new app.Wall(geometry, material, x, y, z);
 		wall.cube.rotation.y = rotation;
 		
-		// add walls
-		this.scene.add(wall.cube);
+		// add to wall array
+		walls.push(wall);
+		
+		// add wall
+		//this.scene.add(wall.cube);
 	}
 };
