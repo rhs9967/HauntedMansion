@@ -15,6 +15,7 @@ app.Wall = function(){
 		this.cube.castShadow = true;
 		
 		this.cube.position.set( x, y, z);
+		app.city.scene.add(this.cube);
 		
 	}; // end Wall Constructor
 	

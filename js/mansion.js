@@ -9,9 +9,9 @@ app.mansion = {
 		LENGTH: 100,
 		HEIGHT: 10,
 		WIDTH: 100,
-		NUMBER_OF_WALLS: 20,
+		NUMBER_OF_WALLS: 1,//20,
 		WALL_LENGTH: 10,
-		WALL_WIDTH: 1,
+		WALL_WIDTH: 0.5,
 		
 		// Variable Properties
 		scene: undefined,
@@ -32,13 +32,19 @@ app.mansion = {
 		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodFloor1.jpg',Math.PI/2); // ceiling
 			
 		// create mansion //
-		
-		// make walls
+		//var x = 20;
+		//var z = 10;
+		//var rot = Math.PI / 3;
+		//this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot);
+
+		// make walls	
 		for (var i = 0; i < this.NUMBER_OF_WALLS; i++) {
-			var x = Math.floor(Math.random() * this.LENGTH);
-			var z = Math.floor(Math.random() * this.WIDTH);
-			var rot = Math.floor(Math.random() * Math.PI*2); 
-			this.makeWall(this.WALL_LENGTH, this.HEIGTH, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot); 
+			var x = Math.floor(Math.random() * this.LENGTH/20)*10;
+			var z = Math.floor(Math.random() * this.WIDTH/20)*10;
+			console.log(x);
+			console.log(z);
+			var rot = 0;//Math.floor(Math.random() * Math.PI*2); 
+			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot); 
 		}
 		
 		// add walls
@@ -82,18 +88,17 @@ app.mansion = {
 		
 		// texture & material
 		var texture = new THREE.ImageUtils.loadTexture( texturePath );
+		//var texture = new THREE.ImageUtils.loadTexture( 'images/Cottage_Wall_Night.jpg' );
 		texture.wrapS = THREE.RepeatWrapping;
-		texture.repeat.set( 1, 1);
+		texture.repeat.set( 2, 1);
 		var material = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: texture, wrapAround: true } );
 		
 		// create and setup wall
 		var wall = new app.Wall(geometry, material, x, y, z);
+		//var wall = new app.Wall(geometry, material, 0, 0, 0);
 		wall.cube.rotation.y = rotation;
 		
 		// add to wall array
 		this.walls.push(wall);
-		
-		// add wall
-		this.scene.add(wall.cube);
 	}
 };
