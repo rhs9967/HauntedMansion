@@ -6,16 +6,16 @@ var app = app || {};
 
 app.mansion = {
 		// Constant Properties
-		LENGTH: 100,
+		LENGTH: 90,
 		HEIGHT: 10,
-		WIDTH: 100,
-		NUMBER_OF_WALLS: 1,//20,
-		WALL_LENGTH: 10,
+		WIDTH: 90,
+		NUMBER_OF_WALLS: 20,
+		WALL_LENGTH: 15,
 		WALL_WIDTH: 0.5,
 		
 		// Variable Properties
 		scene: undefined,
-		//mansion: undefined,
+		//mansion: undefined,1
 		walls: [],
 		
 	
@@ -36,14 +36,30 @@ app.mansion = {
 		//var z = 10;
 		//var rot = Math.PI / 3;
 		//this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot);
+		
+		// make perimeter //
+		// length
+		for (var i = 0; i < this.LENGTH/this.WALL_LENGTH; i++) {
+			var x = this.WIDTH/2;
+			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;
+			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, Math.PI/2);
+			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', -x, 0, z, Math.PI/2);
+		}
+		// width
+		for (var i = 0; i < this.WIDTH/this.WALL_LENGTH; i++) {
+			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
+			var z = this.LENGTH/2;
+			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, 0);
+			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, -z, 0);
+		}
 
 		// make walls	
 		for (var i = 0; i < this.NUMBER_OF_WALLS; i++) {
-			var x = Math.floor(Math.random() * this.LENGTH/20)*10;
-			var z = Math.floor(Math.random() * this.WIDTH/20)*10;
-			console.log(x);
-			console.log(z);
-			var rot = 0;//Math.floor(Math.random() * Math.PI*2); 
+			var x = Math.floor(Math.random() * this.LENGTH/this.WALL_LENGTH)*this.WALL_LENGTH;
+			var z = Math.floor(Math.random() * this.WIDTH/this.WALL_LENGTH)*this.WALL_LENGTH;
+			x -= this.LENGTH/2;
+			z -= this.WIDTH/2;
+			var rot = Math.floor(Math.random()*2)*Math.PI/2; 
 			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot); 
 		}
 		
