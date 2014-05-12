@@ -9,44 +9,48 @@ app.mansion = {
 		LENGTH: 100,
 		HEIGHT: 10,
 		WIDTH: 100,
-		NUMBER_OF_WALLS: 20;
-		WALL_LENGTH: 10;
-		WALL_WIDTH: 1;
+		NUMBER_OF_WALLS: 20,
+		WALL_LENGTH: 10,
+		WALL_WIDTH: 1,
 		
 		// Variable Properties
 		scene: undefined,
-		mansion: undefined,
+		//mansion: undefined,
 		walls: [],
 		
 	
 		init : function() {
 			this.scene = app.city.scene;
-			createMansion();
+			this.createMansion();
     	},
 	
 	// functions //
 	
 	createMansion : function() {
 		// add planes
-		this.addPlane(LENGTH, 0, WIDTH, 'images/WoodFloor1.jpg',-Math.PI/2); // floor
-		this.addPlane(LENGTH, HEIGHT, WIDTH, 'images/WoodFloor1.jpg',Math.PI/2); // ceiling
+		this.addPlane(this.LENGTH, 0, this.WIDTH, 'images/WoodFloor1.jpg',-Math.PI/2); // floor
+		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodFloor1.jpg',Math.PI/2); // ceiling
 			
 		// create mansion //
 		
 		// make walls
-		for (var i = 0; i < NUMBER_OF_WALLS; i++) {
-			var x = Math.floor( Math.random() * LENGTH);
-			var z = Math.floor( Math.random() * WIDTH);
-			//var rot = Math.floor( Math.random(Math.PI*2, 0) * 
-			this.makeWall(WALL_LENGTH, HEIGTH, WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, 
+		for (var i = 0; i < this.NUMBER_OF_WALLS; i++) {
+			var x = Math.floor(Math.random() * this.LENGTH);
+			var z = Math.floor(Math.random() * this.WIDTH);
+			var rot = Math.floor(Math.random() * Math.PI*2); 
+			this.makeWall(this.WALL_LENGTH, this.HEIGTH, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot); 
 		}
 		
+		// add walls
+		//for (var i = 0; i < this.walls.length; i++) {
+		//	this.scene.add(walls[i].cube);
+		//}
+		
 		// merge all walls into a single geometry
-		var mansionGeometry = new Three.Geometry();
-		for (var i = 0; i < this.walls.length; i++) {
-			var wall = this.
-		}
-			
+		//var mansionGeometry = new Three.Geometry();
+		//for (var i = 0; i < this.walls.length; i++) {
+		//	THREE.GeometryUtils.merge(mansionGeometry, this.walls[i]);
+		//}
 	},
 	
 	// Add a plane to the scene
@@ -87,9 +91,9 @@ app.mansion = {
 		wall.cube.rotation.y = rotation;
 		
 		// add to wall array
-		walls.push(wall);
+		this.walls.push(wall);
 		
 		// add wall
-		//this.scene.add(wall.cube);
+		this.scene.add(wall.cube);
 	}
 };

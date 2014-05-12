@@ -100,9 +100,12 @@ app.city = {
 				this.controls.movementSpeed = 15;
 				this.controls.lookSpeed = .75;
 				this.controls.autoForward = false;
+				
+				app.mansion.init();
 	},
 			
 	setupWorld: function() {
+				/*
 				// floor
 				var floorTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
 				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -126,6 +129,8 @@ app.city = {
 				ceiling.rotation.x = Math.PI / 2;
 				ceiling.receiveShadow = true;
 				this.scene.add(ceiling);
+				*/
+				//app.mansion.init();
 				
 				// helper axes
 				var axes = new THREE.AxisHelper(100);
@@ -289,19 +294,27 @@ app.city = {
 				ambientLight.intensity = 1;
 				this.scene.add(ambientLight);
 				
+				// pointlights //
+				/*var pointLight = new THREE.PointLight(0xffffff);
+				pointLight.position.set(0, 9.9, -30);
+				pointLight.castShadow = true;
+				pointLight.shadowCameraNear = 1;
+				pointLight.shadowCameraFar = 100;
+				this.scene.add( pointLight );*/
+				
 				// spotlights //
 				
 				var spotLight = new THREE.SpotLight( 0xffffff );
-				spotLight.position.set(0, 10, 0);
+				spotLight.position.set(0, 9.9, 0);
 				spotLight.castShadow = true;
 				spotLight.shadowCameraNear = 1;
 				spotLight.shadowCameraFar = 50;				
 				//spotLight.shadowCameraVisible = true;
-				//this.scene.add( spotLight );
+				this.scene.add( spotLight );
 
 				
 				var spotLight1 = new THREE.SpotLight( 0xffffff );
-				spotLight1.position.set(15, 10, 0);
+				spotLight1.position.set(15, 9.9, 0);
 				spotLight1.castShadow = true;
 				spotLight1.shadowCameraNear = 1;
 				spotLight1.shadowCameraFar = 50;		
@@ -310,7 +323,7 @@ app.city = {
 				this.scene.add( spotLight1 );
 				
 				var spotLight2 = new THREE.SpotLight( 0xffffff );
-				spotLight2.position.set(-15, 10, 0);
+				spotLight2.position.set(-15, 9.9, 0);
 				spotLight2.castShadow = true;
 				spotLight2.shadowCameraNear = 1;
 				spotLight2.shadowCameraFar = 50;		
@@ -319,7 +332,7 @@ app.city = {
 				this.scene.add( spotLight2 );
 				
 				var spotLight3 = new THREE.SpotLight( 0xffffff );
-				spotLight3.position.set(0, 10, 15);
+				spotLight3.position.set(0, 9.9, 15);
 				spotLight3.castShadow = true;
 				spotLight3.shadowCameraNear = 1;
 				spotLight3.shadowCameraFar = 50;		

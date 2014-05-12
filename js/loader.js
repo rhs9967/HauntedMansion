@@ -39,6 +39,7 @@ app.keydown = [];
 	queue.loadFile("js/artifact.js");
 	queue.loadFile("js/wall.js");
 	queue.loadFile("js/pedestal.js");
+	queue.loadFile("js/mansion.js");
 	
 	// skybox files
 	queue.loadFile("js/Detector.js");
