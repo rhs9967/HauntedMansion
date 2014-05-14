@@ -6,12 +6,13 @@ var app = app || {};
 
 app.mansion = {
 		// Constant Properties
-		LENGTH: 90,
+		LENGTH: 100,//90,
 		HEIGHT: 10,
-		WIDTH: 90,
+		WIDTH: 100,//90,
 		NUMBER_OF_WALLS: 20,
-		WALL_LENGTH: 15,
+		WALL_LENGTH: 10,//15,
 		WALL_WIDTH: 0.5,
+		WALL_IMAGE: 'images/Wall.jpg',
 		
 		// Variable Properties
 		scene: undefined,
@@ -28,51 +29,57 @@ app.mansion = {
 	
 	createMansion : function() {
 		// add planes
-		this.addPlane(this.LENGTH, 0, this.WIDTH, 'images/WoodFloor1.jpg',-Math.PI/2); // floor
-		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodFloor1.jpg',Math.PI/2); // ceiling
-			
-		// create mansion //
-		//var x = 20;
-		//var z = 10;
-		//var rot = Math.PI / 3;
-		//this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot);
+		this.addPlane(this.LENGTH, 0, this.WIDTH, 'images/WoodCeiling1.jpg',-Math.PI/2); // floor
+		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodCeiling1.jpg',Math.PI/2); // ceiling 'images/Ceiling_Black.jpg'
 		
-		// make perimeter //
+		// add perimeter //
 		// length
 		for (var i = 0; i < this.LENGTH/this.WALL_LENGTH; i++) {
 			var x = this.WIDTH/2;
 			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;
-			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, Math.PI/2);
-			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', -x, 0, z, Math.PI/2);
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, -x, 0, z, Math.PI/2);
 		}
 		// width
 		for (var i = 0; i < this.WIDTH/this.WALL_LENGTH; i++) {
 			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
 			var z = this.LENGTH/2;
-			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, 0);
-			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, -z, 0);
-		}
-
-		// make walls	
-		for (var i = 0; i < this.NUMBER_OF_WALLS; i++) {
-			var x = Math.floor(Math.random() * this.LENGTH/this.WALL_LENGTH)*this.WALL_LENGTH;
-			var z = Math.floor(Math.random() * this.WIDTH/this.WALL_LENGTH)*this.WALL_LENGTH;
-			x -= this.LENGTH/2;
-			z -= this.WIDTH/2;
-			var rot = Math.floor(Math.random()*2)*Math.PI/2; 
-			this.makeWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, 'images/Cottage_Wall_Night.jpg', x, 0, z, rot); 
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, -z, 0);
 		}
 		
-		// add walls
-		//for (var i = 0; i < this.walls.length; i++) {
-		//	this.scene.add(walls[i].cube);
-		//}
+		// design interior //
+		// first hallway
+		for (var i = 0; i < (this.WIDTH/this.WALL_LENGTH)-1; i++) {
+			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, 40, 0);
+		}
 		
-		// merge all walls into a single geometry
-		//var mansionGeometry = new Three.Geometry();
-		//for (var i = 0; i < this.walls.length; i++) {
-		//	THREE.GeometryUtils.merge(mansionGeometry, this.walls[i]);
-		//}
+		// second hallway
+		for (var i = 0; i < (this.LENGTH/this.WALL_LENGTH)-1; i++) {
+			// doorway
+			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, 40, 0, z, Math.PI/2);
+			if(i == 5) i++;
+		}
+		
+		// third hallway
+		for (var i = 0; i < (this.WIDTH/this.WALL_LENGTH)-1; i++) {
+			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
+			// North side
+			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, 20, 0);
+			
+			// South side
+			if(i != 0) this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, 10, 0);
+		}
+		
+		// sconces
+		this.addsconce(50, 7, -45);
+		this.addsconce(0, 7, 50);
+		this.addsconce(50, 7, 45);
+		
+		
+		this.addsconce(0, 7, -50);
 	},
 	
 	// Add a plane to the scene
@@ -94,8 +101,8 @@ app.mansion = {
 		this.scene.add(plane);
 	},
 	
-	// Make a Wall
-	makeWall : function(l, h, w, texturePath, x, y, z, rotation) {
+	// add a Wall
+	addWall : function(l, h, w, texturePath, x, y, z, rotation) {
 		// walls //	
 		// geometry
 		var geometry = new THREE.CubeGeometry( l, h, w );
@@ -106,7 +113,7 @@ app.mansion = {
 		var texture = new THREE.ImageUtils.loadTexture( texturePath );
 		//var texture = new THREE.ImageUtils.loadTexture( 'images/Cottage_Wall_Night.jpg' );
 		texture.wrapS = THREE.RepeatWrapping;
-		texture.repeat.set( 2, 1);
+		texture.repeat.set( 1, 1);
 		var material = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: texture, wrapAround: true } );
 		
 		// create and setup wall
@@ -116,5 +123,22 @@ app.mansion = {
 		
 		// add to wall array
 		this.walls.push(wall);
+	},
+	
+	addsconce: function(x, y, z) {
+		// pointLight
+		var light = new THREE.PointLight(0xffffff, 2, 25);
+		light.position.set(x, y, z);
+		this.scene.add( light );
+	
+		// object
+		var pyramidGeometry = new THREE.CylinderGeometry(0, 1.5, 1.5, 4, false); 
+		var pyramidMaterial = new THREE.MeshLambertMaterial();
+		var pyramid = new THREE.Mesh(pyramidGeometry, pyramidMaterial);
+		pyramid.receiveShadow = false;
+		pyramid.castShadow = false;
+		pyramid.position.set(x, y, z);
+		pyramid.rotation.x=Math.PI;
+		this.scene.add(pyramid);
 	}
 };

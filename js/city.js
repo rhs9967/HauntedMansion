@@ -61,18 +61,19 @@ app.city = {
 		// set person to camera's coords
 		this.person.position.x = this.camera.position.x;
 		this.person.position.y = this.camera.position.y;
-		this.person.position.z = this.camera.position.z;		
+		this.person.position.z = this.camera.position.z;	
 	},
 	
 	setupThreeJS: function() {
 				// scene
 				this.scene = new THREE.Scene();
 				//this.scene.fog = new THREE.FogExp2(0x9db3b5, 0.002);
+				this.scene.fog = new THREE.Fog(0x0f0f0f, 5, 85);
 				
 				// camera
 				//this.camera = new THREE.PerspectiveCamera( this.VIEW_ANGLE, this.ASPECT, this.NEAR, this.FAR );
 				this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-				this.camera.position.set( 0, 5, 0 );
+				this.camera.position.set( -45, 5, 45 );
 				this.camera.rotation.y = Math.PI / 180;
 				
 				// set up the cube that the camera will rest on
@@ -80,8 +81,8 @@ app.city = {
 				var cubeTexture = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
 				var cubeMaterial = new THREE.MeshBasicMaterial( { map: cubeTexture, side: THREE.DoubleSide } );
 				this.person = new THREE.Mesh(cubeGeometry,cubeMaterial);
-				this.person.receiveShadow = true;
-				this.person.castShadow = true;
+				this.person.receiveShadow = false;
+				this.person.castShadow = false;
 				
 				this.person.position.set( 0, 5, 0);
 				this.scene.add(this.person);
@@ -150,8 +151,9 @@ app.city = {
 					this.myobjects[i].cube.id = i;
 				}
 				
-				// add lights
-				this.setupLights();
+				// add subtle ambient lighting
+				var ambientLight = new THREE.AmbientLight(0x5f5f5f);
+				this.scene.add(ambientLight);
 	},
 			
 	setupMansion: function(){
@@ -286,80 +288,6 @@ app.city = {
 		this.myobjects.push(cube1);
 		this.myobjects.push(cube2);
 		this.myobjects.push(cube3);
-	},
-	
-	setupLights: function() {
-		// add subtle ambient lighting
-				var ambientLight = new THREE.AmbientLight(0xffffff);//(0x0f0f0f);
-				ambientLight.intensity = 1;
-				this.scene.add(ambientLight);
-				
-				// pointlights //
-				/*var pointLight = new THREE.PointLight(0xffffff);
-				pointLight.position.set(0, 9.9, -30);
-				pointLight.castShadow = true;
-				pointLight.shadowCameraNear = 1;
-				pointLight.shadowCameraFar = 100;
-				this.scene.add( pointLight );*/
-				
-				// spotlights //
-				
-				var spotLight = new THREE.SpotLight( 0xffffff );
-				spotLight.position.set(0, 9.9, 0);
-				spotLight.castShadow = true;
-				spotLight.shadowCameraNear = 1;
-				spotLight.shadowCameraFar = 50;				
-				//spotLight.shadowCameraVisible = true;
-				this.scene.add( spotLight );
-
-				
-				var spotLight1 = new THREE.SpotLight( 0xffffff );
-				spotLight1.position.set(15, 9.9, 0);
-				spotLight1.castShadow = true;
-				spotLight1.shadowCameraNear = 1;
-				spotLight1.shadowCameraFar = 50;		
-				spotLight1.target = this.myobjects[3].cube;
-				//spotLight1.shadowCameraVisible = true;
-				this.scene.add( spotLight1 );
-				
-				var spotLight2 = new THREE.SpotLight( 0xffffff );
-				spotLight2.position.set(-15, 9.9, 0);
-				spotLight2.castShadow = true;
-				spotLight2.shadowCameraNear = 1;
-				spotLight2.shadowCameraFar = 50;		
-				spotLight2.target = this.myobjects[4].cube;
-				//spotLight2.shadowCameraVisible = true;
-				this.scene.add( spotLight2 );
-				
-				var spotLight3 = new THREE.SpotLight( 0xffffff );
-				spotLight3.position.set(0, 9.9, 15);
-				spotLight3.castShadow = true;
-				spotLight3.shadowCameraNear = 1;
-				spotLight3.shadowCameraFar = 50;		
-				spotLight3.target = this.myobjects[5].cube;
-				//spotLight3.shadowCameraVisible = true;
-				this.scene.add( spotLight3 );
-				
-				
-				// add directional light and enable shadows //
-				// the "sun"
-				var dirlight = new THREE.DirectionalLight(0xf9f1c2, 0.75);
-				dirlight.position.set(850, 1100, 2450);
-				//dirlight.position.set(0,5,30);
-				//dirlight.target = this.myobjects[1].cube;
-				dirlight.castShadow = true;
-				dirlight.shadowMapWidth = 2048;
-				dirlight.shadowMapHeight = 2048;
-				
-				var d = 1000; // d = 'distance'
-				// "near" and "far" of shadows and camera
-				dirlight.shadowCameraLeft = d;
-				dirlight.shadowCameraRight = -d;
-				dirlight.shadowCameraTop = d;
-				dirlight.shadowCameraBottom = -d;
-				dirlight.shadowCameraFar = 2500;
-				dirlight.shadowCameraVisible = true;
-				//this.scene.add(dirlight);
 	},
 	
 	// Interactivity
