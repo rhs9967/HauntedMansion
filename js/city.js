@@ -68,12 +68,13 @@ app.city = {
 				// scene
 				this.scene = new THREE.Scene();
 				//this.scene.fog = new THREE.FogExp2(0x9db3b5, 0.002);
-				this.scene.fog = new THREE.Fog(0x0f0f0f, 5, 85);
+				//this.scene.fog = new THREE.Fog(0x0f0f0f, 5, 85);
 				
 				// camera
 				//this.camera = new THREE.PerspectiveCamera( this.VIEW_ANGLE, this.ASPECT, this.NEAR, this.FAR );
 				this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-				this.camera.position.set( -45, 5, 45 );
+				//this.camera.position.set( -45, 5, 45 );
+				this.camera.position.set( 0, 75, 0 );
 				this.camera.rotation.y = Math.PI / 180;
 				
 				// set up the cube that the camera will rest on
@@ -105,34 +106,7 @@ app.city = {
 				app.mansion.init();
 	},
 			
-	setupWorld: function() {
-				/*
-				// floor
-				var floorTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
-				floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-				floorTexture.repeat.set( 10, 10 );
-				var floorMaterial = new THREE.MeshLambertMaterial( { map: floorTexture, side: THREE.FrontSide } );
-				var floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
-				var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-				floor.position.y = 0;
-				floor.rotation.x = -Math.PI / 2;
-				floor.receiveShadow = true;
-				this.scene.add(floor);
-				
-				// ceiling
-				var ceilingTexture = new THREE.ImageUtils.loadTexture( 'images/WoodFloor1.jpg' );
-				ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping; 
-				ceilingTexture.repeat.set( 10, 10 );
-				var ceilingMaterial = new THREE.MeshLambertMaterial( { map: ceilingTexture, side: THREE.FrontSide } );
-				var ceilingGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
-				var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
-				ceiling.position.y = 10;
-				ceiling.rotation.x = Math.PI / 2;
-				ceiling.receiveShadow = true;
-				this.scene.add(ceiling);
-				*/
-				//app.mansion.init();
-				
+	setupWorld: function() {				
 				// helper axes
 				var axes = new THREE.AxisHelper(100);
 				//this.scene.add( axes );	
@@ -152,7 +126,7 @@ app.city = {
 				}
 				
 				// add subtle ambient lighting
-				var ambientLight = new THREE.AmbientLight(0x5f5f5f);
+				var ambientLight = new THREE.AmbientLight(0xffffff);//(0x5f5f5f);
 				this.scene.add(ambientLight);
 	},
 			
