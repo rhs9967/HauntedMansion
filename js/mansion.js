@@ -13,6 +13,7 @@ app.mansion = {
 		WALL_LENGTH: 10,//15,
 		WALL_WIDTH: 0.5,
 		WALL_IMAGE: 'images/Wall.jpg',
+		DOOR_IMAGE: 'images/Door1.jpg',
 		SCONCE_IMAGE: 'images/Sconce.jpg',
 		
 		// Variable Properties
@@ -100,8 +101,11 @@ app.mansion = {
 		for (var i = 0; i < (this.LENGTH/this.WALL_LENGTH)-1; i++) {
 			// doorway
 			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;
-			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, 40, 0, z, Math.PI/2);
-			if(i == 5) i++;
+			if(i != 6 && i != 1) {
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, 40, 0, z, Math.PI/2);
+			} else {
+				this.addDoor(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.DOOR_IMAGE, 40, 0, z-(this.WALL_LENGTH/2), 3);
+			}
 		}
 		
 		// third hallway
@@ -109,9 +113,16 @@ app.mansion = {
 			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
 			// North side
 			if(i != (this.WIDTH/this.WALL_LENGTH)-3 && i != 3 && i!= 4) this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, 20, 0);
+			else{// if ( i != (this.WIDTH/this.WALL_LENGTH)-3){
+				this.addDoor(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.DOOR_IMAGE, x+(this.WALL_LENGTH/2), 0, 20, 0);
+			}
 			
 			// South side
-			if(i != 1) this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, 10, 0);
+			if(i != 1) {
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, 10, 0);
+			} else {
+				this.addDoor(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.DOOR_IMAGE, x+(this.WALL_LENGTH/2), 0, 10, 2);
+			}
 		}
 		
 		// eastern interior walls
@@ -119,6 +130,12 @@ app.mansion = {
 			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;
 			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, -10, 0, z, Math.PI/2);
 			if(i == 5) i++;
+		}
+		
+		// western interior walls
+		for (var i = 0; i < (this.WIDTH/this.WALL_LENGTH)-1; i++) {
+			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;			
+			if(i == 7 || i == 8) this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, 10, 0, z, Math.PI/2);
 		}
 		
 		// sconces
@@ -154,15 +171,13 @@ app.mansion = {
 	
 	// add a Wall
 	addWall : function(l, h, w, texturePath, x, y, z, rotation) {
-		// walls //	
 		// geometry
 		var geometry = new THREE.CubeGeometry( l, h, w );
 		// move pivot point to bottom of cube instead of center
-		geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, h/2, 0 ) );//( -l/2, h/2, 0 ) );
+		geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, h/2, 0 ) );//( 0, h/2, 0 ) );
 		
 		// texture & material
 		var texture = new THREE.ImageUtils.loadTexture( texturePath );
-		//var texture = new THREE.ImageUtils.loadTexture( 'images/Cottage_Wall_Night.jpg' );
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.repeat.set( 1, 1);
 		var material = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: texture, wrapAround: true } );
@@ -174,6 +189,26 @@ app.mansion = {
 		
 		// add to wall array
 		this.walls.push(wall);
+	},
+	
+	addDoor : function(l, h, w, texturePath, x, y, z, direction) {
+		// geometry
+		var geometry = new THREE.CubeGeometry( l-.01, h, w+.1 );
+		// move pivot point to bottom of cube instead of center
+		geometry.applyMatrix( new THREE.Matrix4().makeTranslation( -l/2, h/2, 0 ) );
+		
+		// texture & material
+		var texture = new THREE.ImageUtils.loadTexture( texturePath );
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.repeat.set( 1, 1);
+		var material = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: texture, wrapAround: true } );
+		
+		// create and setup door
+		var door = new app.Door(geometry, material, x, y, z, direction);
+		door.move();
+		
+		// add door to targetable objects
+		app.city.myobjects.push(door);
 	},
 	
 	addsconce: function(x, y, z, texturePath) {
