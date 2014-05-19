@@ -3,6 +3,8 @@
  * @author alteredq / http://alteredqualia.com/
  * @author paulirish / http://paulirish.com/
  */
+ 
+ var app = app || {};
 
 THREE.FirstPersonControls = function ( object, domElement ) {
 
@@ -206,7 +208,17 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		if (this.reset ) {
 			this.target = new THREE.Vector3( 0, 0, 0 );
 			this.object.lookAt( this.target );
-			this.object.position.set( 0, 5, 0 );
+			this.object.position.set( -45, 5, 45 );
+			this.object.rotation.y = Math.PI / 180;
+			
+			// turn off flashLight
+			//app.city.flashLight.target.position = targetPosition;
+			app.city.scene.remove(app.city.flashLight);
+			
+			// turn on lights
+			for(var i=0; i < app.mansion.lights.length; i++) {
+					app.city.scene.add(app.mansion.lights[i]);
+				}
 		}
 
 		if ( this.freeze ) {
@@ -240,6 +252,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		tempTarget.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
 		
 		this.object.lookAt( tempTarget);
+		//app.city.flashLight.target.position = tempTarget;
 		
 		// end addition //
 

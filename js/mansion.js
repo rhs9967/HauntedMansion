@@ -35,45 +35,9 @@ app.mansion = {
 		this.addPlane(this.LENGTH, 0, this.WIDTH, 'images/WoodCeiling1.jpg',-Math.PI/2); // floor
 		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodCeiling1.jpg',Math.PI/2); // ceiling 'images/Ceiling_Black.jpg'
 		
-		var rowMax = this.LENGTH/this.WALL_LENGTH;
-		var colMax = this.WIDTH/this.WALL_LENGTH;		
-		/*
-		// setup grid //
-		// North to South
-		for (var i = 0; i <= rowMax; i++){
-			var x = (i * this.WALL_LENGTH) - this.WIDTH/2;
-			// West to East
-			for(var j = 0; j < colMax; j++){
-				if(i == 1){
-					if(j > 0){
-					
-					} else {
-					var z = (j * this.WALL_LENGTH) - this.LENGTH/2;
-					this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
-				}
-				} else {
-					var z = (j * this.WALL_LENGTH) - this.LENGTH/2;
-					this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
-				}
-			}
-		}
+		//var rowMax = this.LENGTH/this.WALL_LENGTH;
+		//var colMax = this.WIDTH/this.WALL_LENGTH;
 		
-		// West to East
-		for (var i = 0; i <= colMax; i++){
-			var z = (i * this.WALL_LENGTH) - this.LENGTH/2;
-			// North to South
-			for(var j = 1; j <= rowMax; j++){
-				if(i == 25 && j == 25){
-				} else {
-					var x = (j * this.WALL_LENGTH) - this.WIDTH/2;
-					this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
-				}
-			}
-		}
-		
-		*/
-		
-		// OLD //
 		// add perimeter //
 		// length
 		for (var i = 0; i < this.LENGTH/this.WALL_LENGTH; i++) {
@@ -139,15 +103,21 @@ app.mansion = {
 		}
 		
 		// sconces
-		this.addsconce(50, 7, -45, this.SCONCE_IMAGE);
-		this.addsconce(0, 7, 50, this.SCONCE_IMAGE);
-		this.addsconce(50, 7, 45, this.SCONCE_IMAGE);		
-		
-		this.addsconce(0, 7, -50, this.SCONCE_IMAGE);
+		this.addsconce(-30, 7, 40, this.SCONCE_IMAGE, true);
+		this.addsconce(25, 7, 40, this.SCONCE_IMAGE, true);
+		this.addsconce(45, 7, -50, this.SCONCE_IMAGE, true);
+		this.addsconce(15, 7, 10, this.SCONCE_IMAGE, true);
+		this.addsconce(50, 7, 45, this.SCONCE_IMAGE, true);		
+		this.addsconce(40, 7, -10, this.SCONCE_IMAGE, true);
+		this.addsconce(15, 7, -50, this.SCONCE_IMAGE, true);
+		this.addsconce(-20, 7, 10, this.SCONCE_IMAGE, true);
+		this.addsconce(-10, 7, -20, this.SCONCE_IMAGE, true);
+		this.addsconce(-50, 7, -20, this.SCONCE_IMAGE, true);
+		this.addsconce(-30, 7, -50, this.SCONCE_IMAGE, true);
 		
 		// paintings
-		this.addPainting(4, 3, .1, 'images/painting1.jpg', -25, 6.5, 49.4, 0);
-		this.addPainting(5, 3, .1, 'images/painting2.jpg', 25, 6.5, 40.6, 0);
+		this.addPainting(4, 3, .1, 'images/painting1.jpg', -25, 6.5, 49.7, 0);
+		this.addPainting(5, 3, .1, 'images/painting2.jpg', 15, 6.5, 40.3, 0);
 	},
 	
 	// Add a plane to the scene
@@ -211,14 +181,16 @@ app.mansion = {
 		app.city.myobjects.push(door);
 	},
 	
-	addsconce: function(x, y, z, texturePath) {
-		// pointLight
-		var light = new THREE.PointLight(0xffffff, 2, 25);
-		light.position.set(x, y, z);
-		this.scene.add( light );
-		
-		// add to light array
-		this.lights.push(light);
+	addsconce: function(x, y, z, texturePath, isLit) {
+		if(isLit){
+			// pointLight
+			var light = new THREE.PointLight(0xffffff, 2, 25);
+			light.position.set(x, y, z);
+			this.scene.add( light );
+			
+			// add to light array
+			this.lights.push(light);
+		}
 	
 		// sconce
 		var geometry = new THREE.CylinderGeometry(0, 1.5, 1.5, 4, false); 

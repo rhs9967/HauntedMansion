@@ -19,6 +19,7 @@ app.city = {
 		camera: undefined,
 		person: undefined,
 		controls: undefined,
+		flashLight: undefined,
 		myobjects: [],
 		invobjects: [],
 		paused: false,
@@ -56,9 +57,9 @@ app.city = {
 		}
 		
 		// set person to camera's coords
-		this.person.position.x = this.camera.position.x;
-		this.person.position.y = this.camera.position.y;
-		this.person.position.z = this.camera.position.z;	
+		//this.person.position.x = this.camera.position.x;
+		//this.person.position.y = this.camera.position.y;
+		//this.person.position.z = this.camera.position.z;	
 	},
 	
 	setupThreeJS: function() {
@@ -73,6 +74,7 @@ app.city = {
 				this.camera.position.set( -45, 5, 45 );
 				//this.camera.position.set( 0, 75, 0 );
 				this.camera.rotation.y = Math.PI / 180;
+				this.scene.add( this.camera );
 				
 				// set up the cube that the camera will rest on
 				var cubeGeometry = new THREE.CubeGeometry( .5, .5, .5 );
@@ -82,7 +84,10 @@ app.city = {
 				this.person.receiveShadow = false;
 				this.person.castShadow = false;
 				
-				this.person.position.set( 0, 5, 0);
+				//this.person.position.set( 0, 5, 0);
+				//this.person.position.set( -45, 5, 45);
+				this.person.position = this.camera.position;
+				this.person.rotation = this.camera.rotation;
 				this.scene.add(this.person);
 				
 				
@@ -122,8 +127,32 @@ app.city = {
 					this.myobjects[i].cube.id = i;
 				}
 				
+				// flashLight
+				this.flashLight = new THREE.PointLight(0xffffff, 2, 20);
+				this.flashLight.position = this.camera.position;
+				/*
+				this.flashLight = new THREE.SpotLight(0xffffff);
+				this.flashLight.position = this.camera.position;
+				this.flashLight.castShadow = true;
+				//this.flashLight.shadowCameraFov = 50;
+				this.flashLight.shadowCameraVisible = true;
+				this.flashLight.shadowCameraNear = 1.1;
+				this.flashLight.shadowCameraFar = 25;
+				var targetGeometry = new THREE.CubeGeometry( .5, .5, .5);
+				var targetMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
+				var target = new THREE.Mesh(targetGeometry, targetMaterial);
+				this.flashLight.target = target;
+				this.flashLight.target.position.set(0, 0, 0);
+				*/
+				
+				//this.camera.add( this.flashLight.target );
+				//this.flashLight.target.position.set(0, 0, -1);
+				//this.flashLight.position = this.camera.position;
+				//this.flashLight.distance = 10;
+				
+				
 				// add subtle ambient lighting
-				var ambientLight = new THREE.AmbientLight(0x0f0f0f);//(0xffffff);
+				var ambientLight = new THREE.AmbientLight(0x2f2f2f);//(0xffffff);
 				this.scene.add(ambientLight);
 	},
 			
@@ -266,6 +295,14 @@ app.city = {
 					this.myobjects[obj.pedestalId].artifactId = -1;
 					obj.pedestalId = -1;
 				}
+				
+				// turn off lights
+				for(var i=0; i < app.mansion.lights.length; i++) {
+					this.scene.remove(app.mansion.lights[i]);
+				}
+				
+				// turn on flashlight
+				this.scene.add( this.flashLight );
 			}		
 			/*
 			//intersects[ 0 ].object.material.transparent = true;
