@@ -20,9 +20,11 @@ app.city = {
 		person: undefined,
 		controls: undefined,
 		flashLight: undefined,
+		direction: undefined,
 		myobjects: [],
 		invobjects: [],
 		paused: false,
+		noCollision: true,
 		dt: 1/60,
 		
 		
@@ -45,7 +47,9 @@ app.city = {
 			return;
 		 }
 	
-		// UPDATE
+		// check collisions
+		this.checkCollisions();
+		
 		this.controls.update(this.dt);
 		
 		// DRAW	
@@ -55,6 +59,8 @@ app.city = {
 		for(var i = 0; i < this.myobjects.length; i++) {
 			this.myobjects[i].update(this.dt);
 		}
+		
+		
 		
 		// set person to camera's coords
 		//this.person.position.x = this.camera.position.x;
@@ -127,29 +133,11 @@ app.city = {
 					this.myobjects[i].cube.id = i;
 				}
 				
+				this.direction = new THREE.Vector3(0, 0, 0);
+				
 				// flashLight
 				this.flashLight = new THREE.PointLight(0xffffff, 2, 20);
-				this.flashLight.position = this.camera.position;
-				/*
-				this.flashLight = new THREE.SpotLight(0xffffff);
-				this.flashLight.position = this.camera.position;
-				this.flashLight.castShadow = true;
-				//this.flashLight.shadowCameraFov = 50;
-				this.flashLight.shadowCameraVisible = true;
-				this.flashLight.shadowCameraNear = 1.1;
-				this.flashLight.shadowCameraFar = 25;
-				var targetGeometry = new THREE.CubeGeometry( .5, .5, .5);
-				var targetMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
-				var target = new THREE.Mesh(targetGeometry, targetMaterial);
-				this.flashLight.target = target;
-				this.flashLight.target.position.set(0, 0, 0);
-				*/
-				
-				//this.camera.add( this.flashLight.target );
-				//this.flashLight.target.position.set(0, 0, -1);
-				//this.flashLight.position = this.camera.position;
-				//this.flashLight.distance = 10;
-				
+				this.flashLight.position = this.camera.position;				
 				
 				// add subtle ambient lighting
 				var ambientLight = new THREE.AmbientLight(0x2f2f2f);//(0xffffff);
@@ -223,11 +211,61 @@ app.city = {
 		
 	},
 	
+	// collision
+	checkCollisions: function() {
+		var caster = new THREE.Raycaster();
+		
+		var rays = [
+			new THREE.Vector3(0, 0, 1),
+			new THREE.Vector3(1, 0, 1),
+			new THREE.Vector3(1, 0, 0),
+			new THREE.Vector3(1, 0, -1),
+			new THREE.Vector3(0, 0, -1),
+			new THREE.Vector3(-1, 0, -1),
+			new THREE.Vector3(-1, 0, 0),
+			new THREE.Vector3(-1, 0, 1)
+		];
+		
+		var collisions;
+		var distance = 0;
+		
+		// array of collidables
+		var objectArray = [];		
+		for(var i=0; i < this.myobjects.length; i++) {
+			objectArray.push(this.myobjects[i].cube);
+		}
+		
+		for(var i=0; i < app.mansion.walls.length; i++) {
+			objectArray.push(app.mansion.walls[i].cube);
+		}
+		
+		// for each ray
+		for (var i = 0; i < rays.length; i++) {
+		  // We reset the raycaster to this direction
+		  caster.set(this.person.position, rays[i]);
+		  // Test if we intersect with any obstacle mesh
+		  collisions = caster.intersectObjects(objectArray);
+		  // And disable that direction if we do
+		  if (collisions.length > 0 && collisions[0].distance <= distance) {
+			// Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
+			if ((i === 0 || i === 1 || i === 7) && this.direction.z === 1) {
+			  this.direction.setZ(0);
+			} else if ((i === 3 || i === 4 || i === 5) && this.direction.z === -1) {
+			  this.direction.setZ(0);
+			}
+			if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
+			  this.direction.setX(0);
+			} else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
+			  this.direction.setX(0);
+			}
+		  }
+		}
+	},
+	
 	// Interactivity
 	onMouseDown: function(event) {
 		event.preventDefault();
 		var projector = new THREE.Projector();
-		var tube;
 		
 		// 2D point where we clicked on the screen
 		var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
@@ -304,30 +342,6 @@ app.city = {
 				// turn on flashlight
 				this.scene.add( this.flashLight );
 			}		
-			/*
-			//intersects[ 0 ].object.material.transparent = true;
-			//intersects[ 0 ].object.material.opacity = 0.3;
-			
-			var points = [];
-			var origin = raycaster.ray.origin.clone();
-			//console.log(origin);
-			//points.push(new THREE.Vector3(-30, 39.8, 30));
-			points.push(origin);
-			points.push(intersects[0].point);
-			
-			var mat = new THREE.MeshBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.6});
-            var tubeGeometry = new THREE.TubeGeometry(new THREE.SplineCurve3(points), 60, 0.001);
-
-            //if (tube) this.scene.remove(tube);
-
-            //if (this.controls.showRay) {
-				//tube = new THREE.Mesh(tubeGeometry, mat);
-				//this.scene.add(tube);
-			//}
-			
-			//console.log("point.x="+intersects.[0].point.x);
-			//console.log("point.y="+intersects.[0].point.y);
-			*/
 		}
 	},
 	

@@ -101,7 +101,6 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		}
 		*/
-		console.log("mousedown");
 		app.city.onMouseDown(event);
 		
 		
@@ -202,8 +201,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	};
 
-	this.update = function( delta ) {
-	
+	this.update = function( delta ) {		
 		// addition
 		if (this.reset ) {
 			this.target = new THREE.Vector3( 0, 0, 0 );
@@ -225,6 +223,11 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			return;
 
+		}
+		
+		if (app.city.direction.x == 0 || app.citydirection.z == 0) {
+			console.log("collision");
+			//return;
 		}
 
 		if ( this.heightSpeed ) {
