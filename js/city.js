@@ -53,6 +53,8 @@ app.city = {
 			this.drawPauseScreen();
 			return;
 		 }
+		 
+		this.person.position.y = 5;
 	
 		// check collisions
 		this.checkCollisions();
@@ -76,55 +78,59 @@ app.city = {
 		// collision detection and prevention
 		// coded by Zach Whitman 
 		var oldrotation = this.person.rotation;
-		//var tempPerson = this.person;
+		var tempPersonG = new THREE.CubeGeometry( .5, .5, .5 );
+		var tempPerson = new THREE.Mesh(tempPersonG);
+		tempPerson.position.set(this.person.position.x, this.person.position.y-4, this.person.position.z);
+		tempPerson.rotation.set(oldrotation.x, oldrotation.y, oldrotation.z);
 		//this.scene.add(tempPerson);
 		var collided = false;
+		if ( this.controls.freeze == false) {
+			// move the cube up,left,down,right
+			if ( this.controls.moveRight )
+			{
+				//this.person.position.x -= this.movementSpeed;
+				tempPerson.translateX( this.movementSpeed);
+				//tempPerson.translateX( this.movementSpeed);
+				//oldX += this.movementSpeed;
+				this.typeHit = 1;
+			}
+			else if ( this.controls.moveLeft )
+			{
+				//this.person.position.x += this.movementSpeed;
+				tempPerson.translateX( -this.movementSpeed);
+				//tempPerson.translateX( -this.movementSpeed);
+				//oldX -= this.movementSpeed;
+				this.typeHit = 2;
+			}
+			else if ( this.controls.moveBackward )
+			{
+				//this.person.position.z -= this.movementSpeed;
+				tempPerson.translateZ( this.movementSpeed);
+				//tempPerson.translateZ( this.movementSpeed);
+				//oldZ += this.movementSpee;
+				this.typeHit = 3;
+			}
+			else if ( this.controls.moveForward )
+			{
+				//this.person.position.z += this.movementSpeed;
+				tempPerson.translateZ( -this.movementSpeed);
+				//tempPerson.translateZ( -this.movementSpeed);
+				//oldZ -= this.movementSpeed;
+				this.typeHit = 4;
+			}
+		}
 		
-		// move the cube up,left,down,right
-		if ( this.controls.moveRight )
-		{
-			//this.person.position.x -= this.movementSpeed;
-			this.person.translateX( this.movementSpeed);
-			//tempPerson.translateX( this.movementSpeed);
-			//oldX += this.movementSpeed;
-			this.typeHit = 1;
-		}
-		if ( this.controls.moveLeft )
-		{
-			//this.person.position.x += this.movementSpeed;
-			this.person.translateX( -this.movementSpeed);
-			//tempPerson.translateX( -this.movementSpeed);
-			//oldX -= this.movementSpeed;
-			this.typeHit = 2;
-		}
-		if ( this.controls.moveBackward )
-		{
-			//this.person.position.z -= this.movementSpeed;
-			this.person.translateZ( this.movementSpeed);
-			//tempPerson.translateZ( this.movementSpeed);
-			//oldZ += this.movementSpee;
-			this.typeHit = 3;
-		}
-		if ( this.controls.moveForward )
-		{
-			//this.person.position.z += this.movementSpeed;
-			this.person.translateZ( -this.movementSpeed);
-			//tempPerson.translateZ( -this.movementSpeed);
-			//oldZ -= this.movementSpeed;
-			this.typeHit = 4;
-		}
-		
-		var originPoint = this.person.position.clone();
+		var originPoint = tempPerson.position.clone();
 		//var originPoint = tempPerson.position.clone();
 		//clearText(originPoint);
 		
 		// check for collisions
 		//for (var vertexIndex = 0; vertexIndex < tempPerson.geometry.vertices.length; vertexIndex++)
-		for (var vertexIndex = 0; vertexIndex < this.person.geometry.vertices.length; vertexIndex++)
+		for (var vertexIndex = 0; vertexIndex < tempPerson.geometry.vertices.length; vertexIndex++)
 		{		
-			var localVertex = this.person.geometry.vertices[vertexIndex].clone();
-			var globalVertex = localVertex.applyMatrix4( this.person.matrix );
-			var directionVector = globalVertex.sub( this.person.position );
+			var localVertex = tempPerson.geometry.vertices[vertexIndex].clone();
+			var globalVertex = localVertex.applyMatrix4( tempPerson.matrix );
+			var directionVector = globalVertex.sub( tempPerson.position );
 			
 			//var localVertex = tempPerson.geometry.vertices[vertexIndex].clone();
 			//var globalVertex = localVertex.applyMatrix4( tempPerson.matrix );
@@ -133,44 +139,55 @@ app.city = {
 			var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
 			var collisionResults = ray.intersectObjects( this.collidableMeshList );
 			
-			if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+			if ( collisionResults.length > 0 && collisionResults[0].distance < 2 ) 
 			{
 			// There was a collision so you must undo the movement
 				if(this.typeHit == 1)
 				{
 					//this.person.position.x += this.movementSpeed;
-					this.person.translateX( -this.movementSpeed - 2);
+					tempPerson.translateX( -this.movementSpeed);
 					collided = true;
 				}
 				else if(this.typeHit == 2)
 				{
 					//this.person.position.x -= this.movementSpeed;
-					this.person.translateX( +this.movementSpeed + 2);
+					tempPerson.translateX( this.movementSpeed);
 					collided = true;
 				}
 				else if(this.typeHit == 3)
 				{
 					//this.person.position.z += this.movementSpeed;
-					this.person.translateZ( -this.movementSpeed - 2);
+					tempPerson.translateZ( -this.movementSpeed);
 					collided = true;
 				}
 				else if(this.typeHit == 4)
 				{
 					//this.person.position.z -= this.movementSpeed;
-					this.person.translateZ( +this.movementSpeed + 2);
+					tempPerson.translateZ( this.movementSpeed);
 					collided = true;
 				}
+				this.typeHit = 0;
 			} // end collision hit
 			
 		} // end check for collision loop
 		
 		if(collided == false)
 		{
-			//this.person.position = tempPerson.position;
+			this.person.position = tempPerson.position;
+		} else {
+			console.log("collision");
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		
+		this.person.position = tempPerson.position;
+		this.person.position.y = 5;
 		this.camera.position.set( this.person.position.x, this.person.position.y, this.person.position.z);
+		
+		// flashlight
+		if(this.controls.lightOn) {
+			this.flashLight.intensity = 2;
+		} else {
+			this.flashLight.intensity = 0;
+		}
 		
 	
 		// DRAW	
@@ -200,7 +217,7 @@ app.city = {
 				this.scene.add( this.camera );
 				
 				// set up the cube that the camera will rest on
-				var cubeGeometry = new THREE.CubeGeometry( .5, .5, .5 );
+				var cubeGeometry = new THREE.CubeGeometry( .5, 4, .5 );
 				var cubeTexture = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
 				var cubeMaterial = new THREE.MeshBasicMaterial( { map: cubeTexture, side: THREE.DoubleSide } );
 				
@@ -258,8 +275,9 @@ app.city = {
 				this.direction = new THREE.Vector3(0, 0, 0);
 				
 				// flashLight
-				this.flashLight = new THREE.PointLight(0xffffff, 2, 20);
-				this.flashLight.position = this.camera.position;				
+				this.flashLight = new THREE.PointLight(0xffffff, 0, 20);
+				this.flashLight.position = this.camera.position;		
+				this.scene.add(this.flashLight);
 				
 				// add subtle ambient lighting
 				var ambientLight = new THREE.AmbientLight(0x2f2f2f);//(0xffffff);
@@ -477,9 +495,6 @@ app.city = {
 				for(var i=0; i < app.mansion.lights.length; i++) {
 					this.scene.remove(app.mansion.lights[i]);
 				}
-				
-				// turn on flashlight
-				this.scene.add( this.flashLight );
 			}		
 		}
 	},

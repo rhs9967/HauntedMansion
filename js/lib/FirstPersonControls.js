@@ -49,6 +49,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	
 	// addition
 	this.reset = false;
+	this.lightOn = false;
 
 	this.mouseDragOn = false;
 
@@ -163,8 +164,9 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = true; break;
 
-			case 82: /*R*/ this.moveUp = true; break;
-			case 70: /*F*/ this.moveDown = true; break;
+			//case 82: /*R*/ this.moveUp = true; break;
+			//case 70: /*F*/ this.moveDown = true; break;
+			case 70: /*F*/ this.lightOn = !this.lightOn; break;
 
 			case 81: /*Q*/ this.freeze = !this.freeze; break;
 			
@@ -191,8 +193,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			case 39: /*right*/
 			case 68: /*D*/ this.moveRight = false; break;
 
-			case 82: /*R*/ this.moveUp = false; break;
-			case 70: /*F*/ this.moveDown = false; break;
+			//case 82: /*R*/ this.moveUp = false; break;
+			//case 70: /*F*/ this.moveDown = false; break;
 			
 			// addition
 			case 90: /*Z*/ this.reset = false; break;
@@ -211,7 +213,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			
 			// turn off flashLight
 			//app.city.flashLight.target.position = targetPosition;
-			app.city.scene.remove(app.city.flashLight);
+			//app.city.scene.remove(app.city.flashLight);
 			
 			// turn on lights
 			for(var i=0; i < app.mansion.lights.length; i++) {
