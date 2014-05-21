@@ -18,6 +18,9 @@ app.Artifact = function(){
 		
 		this.pedestalId = -1;
 		
+		this.rotateX = 0.03;
+		this.rotateY = 0.1;
+		this.rotateZ = 0.01;
 	}; // end Artifact Constructor
 	
 	
@@ -25,9 +28,14 @@ app.Artifact = function(){
 	
 	// updates the cube's posistion
 	a.update = function(dt) {
-		this.cube.rotation.x += 0.03;
-		this.cube.rotation.y += 0.1;
-		this.cube.rotation.z += 0.01;
+		//this.cube.rotation.x += 0.03;
+		//this.cube.rotation.y += 0.1;
+		//this.cube.rotation.z += 0.01;
+		
+		this.cube.rotation.x += this.rotateX;
+		this.cube.rotation.y += this.rotateY;
+		this.cube.rotation.z += this.rotateZ;
+		
 	};
 	
 	

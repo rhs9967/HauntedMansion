@@ -33,6 +33,7 @@ app.keydown = [];
 	var queue = new createjs.LoadQueue(false);
 	queue.on("fileload", handleFileLoad, this);
 	queue.on("complete", complete, this);
+	queue.loadFile("js/lib/dat.gui.js");
 	queue.loadFile("js/lib/three.min.js");
 	queue.loadFile("js/lib/FirstPersonControls.js");
 	queue.loadFile("js/city.js");

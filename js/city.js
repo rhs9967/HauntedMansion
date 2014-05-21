@@ -33,6 +33,8 @@ app.city = {
 		bats : [],
 		batFlys: undefined,
 		clock: new THREE.Clock(),
+		gui: undefined,
+		controlz: undefined,
 		
 		
     	init : function() {
@@ -61,6 +63,7 @@ app.city = {
 		//debugger;
 		this.controls.update(this.dt, this.person);
 		this.person.rotation = this.controls.object.rotation;
+		this.bats[0].rotation = this.controls.object.rotation;
 		//this.controls.update(this.dt);
 		
 		// update bat sprite
@@ -172,18 +175,30 @@ app.city = {
 		
 		this.camera.position.set( this.person.position.x, this.person.position.y, this.person.position.z);
 		
-	
+		
+		//update the bat and make it follow the player
+		this.bats[0].position.set(this.person.position.x - 5, this.person.position.y, this.person.position.z);
+		
+		
+		
+		//update properties based off of the gui
+		for(var i = 0; i < app.mansion.lights.length; i++)
+		{
+			app.mansion.lights[i].intensity = this.controlz.lightLevel;
+		}
+		
+		for(var i = 0; i < this.myobjects.length; i++) {
+			this.myobjects[i].rotateX = this.controlz.artifactXSpeed;
+			this.myobjects[i].rotateY = this.controlz.artifactYSpeed;
+			this.myobjects[i].rotateZ = this.controlz.artifactZSpeed;
+		}
+		
+		
 		// DRAW	
 		this.renderer.render(this.scene, this.camera);
 		
-		
-		
-		
-		// set person to camera's coords
-		//this.person.position.x = this.camera.position.x;
-		//this.person.position.y = this.camera.position.y;
-		//this.person.position.z = this.camera.position.z;	
 	},
+	
 	
 	setupThreeJS: function() {
 				// scene
@@ -230,9 +245,27 @@ app.city = {
 				this.controls.lookSpeed = .75;
 				this.controls.autoForward = false;
 				
+				// allows the gui to control different things
+				this.controlz = new function()
+				{
+					this.lightLevel = 2;
+					this.artifactXSpeed = 0.03;
+					this.artifactYSpeed = 0.1;
+					this.artifactZSpeed = 0.01;
+				}
+				
+				//adds in a new gui
+				this.gui = new dat.GUI();
+				this.gui.add(this.controlz, 'lightLevel', 0, 10);
+				this.gui.add(this.controlz, 'artifactXSpeed', 0, 1);
+				this.gui.add(this.controlz, 'artifactYSpeed', 0, 1);
+				this.gui.add(this.controlz, 'artifactZSpeed', 0, 1);
+				
 				app.mansion.init();
 	},
-			
+	
+
+				
 	setupWorld: function() {				
 				// helper axes
 				var axes = new THREE.AxisHelper(100);
@@ -515,7 +548,7 @@ app.city = {
 		var planeTexture = new THREE.ImageUtils.loadTexture('images/batFly.png');
 		this.batFlys = new this.textureAnimator(planeTexture, 4, 1, 4, 50);
 		var planeMaterial = new THREE.MeshBasicMaterial( {map: planeTexture, side:THREE.DoubleSide } );
-		var planeGeometry = new THREE.PlaneGeometry(-5,5, 1,1);
+		var planeGeometry = new THREE.PlaneGeometry(.5,.5, 1,1);
 		var bat = new THREE.Mesh(planeGeometry,planeMaterial);
 		bat.position.set(-45,5,45);
 		
@@ -564,69 +597,7 @@ app.city = {
 		};
 	}, // end TextureAnimator
 	
-	
-	/*
-		// coded by Zach Whitman
-	// sets up a bat to fly around
-	setUpBat: function(){
-		//debugger;
-		console.log("FUCK");
-		var batTexture = new THREE.ImageUtils.loadTexture('images/batFly.png');
-		batFlyer = new this.TextureAnimator(batTexture, 4,1,4,100);
-		console.log("FUCK2");
-		var batMaterial = new THREE.MeshBasicMaterial( { map: batTexture, side:THREE.DoubleSide } );
-		console.log("FUCK3");
-		var batGeometry = new THREE.PlaneGeometry(50,50,1,1);
-		console.log("FUCK4");
-		//debugger;
-		var bat1 = new app.Bat(batGeometry,batMaterial, -45,5,-45);
-		console.log("FUCK5");
-		this.scene.add(bat1.plane);
-		console.log("FUCK6");
-		bats.push(bat1.plane);
-		console.log("FUCK7");
-	},
-	
-	// TextureAnimator function written by Lee Stemkoski
-	TextureAnimator: function(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) 
-	{	
-		// note: texture passed by reference, will be updated by the update function.
-		
-		this.tilesHorizontal = tilesHoriz;
-		this.tilesVertical = tilesVert;
-		// how many images does this spritesheet contain?
-		//  usually equals tilesHoriz * tilesVert, but not necessarily,
-		//  if there at blank tiles at the bottom of the spritesheet. 
-		this.numberOfTiles = numTiles;
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
-		texture.repeat.set( 1 / this.tilesHorizontal, 1 / this.tilesVertical );
 
-		// how long should each image be displayed?
-		this.tileDisplayDuration = tileDispDuration;
-
-		// how long has the current image been displayed?
-		this.currentDisplayTime = 0;
-
-		// which image is currently being displayed?
-		this.currentTile = 0;
-		
-		this.update = function( milliSec )
-		{
-			this.currentDisplayTime += milliSec;
-			while (this.currentDisplayTime > this.tileDisplayDuration)
-			{
-		
-				this.currentDisplayTime -= this.tileDisplayDuration;
-				this.currentTile++;
-				if (this.currentTile == this.numberOfTiles)
-					this.currentTile = 0;
-				var currentColumn = this.currentTile % this.tilesHorizontal;
-				texture.offset.x = currentColumn / this.tilesHorizontal;
-				var currentRow = Math.floor( this.currentTile / this.tilesHorizontal );
-				texture.offset.y = currentRow / this.tilesVertical;
-			}
-		};
-	},*/
 	
 	
 	
