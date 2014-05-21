@@ -39,7 +39,7 @@ app.city = {
 			console.log('init called');
 			
 			this.setupThreeJS();
-			this.setupWorld();			
+			this.setupWorld();
 			this.update();
     	},
     	
@@ -62,6 +62,10 @@ app.city = {
 		this.controls.update(this.dt, this.person);
 		this.person.rotation = this.controls.object.rotation;
 		//this.controls.update(this.dt);
+		
+		// update bat sprite
+		var delta = this.clock.getDelta();
+		this.batFlys.update(1000 * delta);
 		
 		// rotate uncollected artifacts
 		for(var i = 0; i < this.myobjects.length; i++) {
@@ -168,6 +172,7 @@ app.city = {
 		
 		this.camera.position.set( this.person.position.x, this.person.position.y, this.person.position.z);
 		
+	
 		// DRAW	
 		this.renderer.render(this.scene, this.camera);
 		
@@ -240,6 +245,9 @@ app.city = {
 				
 				// add artifacts
 				this.setupArtifacts();
+				
+				// add bats
+				this.setUpBats();
 				
 				// once done adding to myobjects, set object.id for each object
 				for(var i=0; i < this.myobjects.length; i++) {
@@ -481,6 +489,127 @@ app.city = {
 	
 	drawPauseScreen: function(){
 		// do something pause-like if you want
-	}
+	},
+		// setUpBats written by Zach W
+	setUpBats: function()
+	{
+		//debugger;
+		var planeTexture = new THREE.ImageUtils.loadTexture('images/batFly.png');
+		this.batFlys = new this.textureAnimator(planeTexture, 4, 1, 4, 50);
+		var planeMaterial = new THREE.MeshBasicMaterial( {map: planeTexture, side:THREE.DoubleSide } );
+		var planeGeometry = new THREE.PlaneGeometry(-5,5, 1,1);
+		var bat = new THREE.Mesh(planeGeometry,planeMaterial);
+		bat.position.set(-45,5,45);
+		
+		this.scene.add(bat);
+		this.bats.push(bat);
+		
+	},
+	
+	// TextureAnimator function written by Lee Stemkoski
+	textureAnimator: function(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) 
+	{	
+		// note: texture passed by reference, will be updated by the update function.
+			
+		this.tilesHorizontal = tilesHoriz;
+		this.tilesVertical = tilesVert;
+		// how many images does this spritesheet contain?
+		//  usually equals tilesHoriz * tilesVert, but not necessarily,
+		//  if there at blank tiles at the bottom of the spritesheet. 
+		this.numberOfTiles = numTiles;
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+		texture.repeat.set( 1 / this.tilesHorizontal, 1 / this.tilesVertical );
+
+		// how long should each image be displayed?
+		this.tileDisplayDuration = tileDispDuration;
+
+		// how long has the current image been displayed?
+		this.currentDisplayTime = 0;
+
+		// which image is currently being displayed?
+		this.currentTile = 0;
+			
+		this.update = function( milliSec )
+		{
+			this.currentDisplayTime += milliSec;
+			while (this.currentDisplayTime > this.tileDisplayDuration)
+			{
+				this.currentDisplayTime -= this.tileDisplayDuration;
+				this.currentTile++;
+				if (this.currentTile == this.numberOfTiles)
+					this.currentTile = 0;
+				var currentColumn = this.currentTile % this.tilesHorizontal;
+				texture.offset.x = currentColumn / this.tilesHorizontal;
+				var currentRow = Math.floor( this.currentTile / this.tilesHorizontal );
+				texture.offset.y = currentRow / this.tilesVertical;
+			}
+		};
+	}, // end TextureAnimator
+	
+	
+	/*
+		// coded by Zach Whitman
+	// sets up a bat to fly around
+	setUpBat: function(){
+		//debugger;
+		console.log("FUCK");
+		var batTexture = new THREE.ImageUtils.loadTexture('images/batFly.png');
+		batFlyer = new this.TextureAnimator(batTexture, 4,1,4,100);
+		console.log("FUCK2");
+		var batMaterial = new THREE.MeshBasicMaterial( { map: batTexture, side:THREE.DoubleSide } );
+		console.log("FUCK3");
+		var batGeometry = new THREE.PlaneGeometry(50,50,1,1);
+		console.log("FUCK4");
+		//debugger;
+		var bat1 = new app.Bat(batGeometry,batMaterial, -45,5,-45);
+		console.log("FUCK5");
+		this.scene.add(bat1.plane);
+		console.log("FUCK6");
+		bats.push(bat1.plane);
+		console.log("FUCK7");
+	},
+	
+	// TextureAnimator function written by Lee Stemkoski
+	TextureAnimator: function(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) 
+	{	
+		// note: texture passed by reference, will be updated by the update function.
+		
+		this.tilesHorizontal = tilesHoriz;
+		this.tilesVertical = tilesVert;
+		// how many images does this spritesheet contain?
+		//  usually equals tilesHoriz * tilesVert, but not necessarily,
+		//  if there at blank tiles at the bottom of the spritesheet. 
+		this.numberOfTiles = numTiles;
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+		texture.repeat.set( 1 / this.tilesHorizontal, 1 / this.tilesVertical );
+
+		// how long should each image be displayed?
+		this.tileDisplayDuration = tileDispDuration;
+
+		// how long has the current image been displayed?
+		this.currentDisplayTime = 0;
+
+		// which image is currently being displayed?
+		this.currentTile = 0;
+		
+		this.update = function( milliSec )
+		{
+			this.currentDisplayTime += milliSec;
+			while (this.currentDisplayTime > this.tileDisplayDuration)
+			{
+		
+				this.currentDisplayTime -= this.tileDisplayDuration;
+				this.currentTile++;
+				if (this.currentTile == this.numberOfTiles)
+					this.currentTile = 0;
+				var currentColumn = this.currentTile % this.tilesHorizontal;
+				texture.offset.x = currentColumn / this.tilesHorizontal;
+				var currentRow = Math.floor( this.currentTile / this.tilesHorizontal );
+				texture.offset.y = currentRow / this.tilesVertical;
+			}
+		};
+	},*/
+	
+	
 	
 };

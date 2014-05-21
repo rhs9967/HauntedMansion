@@ -226,7 +226,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		}
 		
 		if (app.city.direction.x == 0 || app.citydirection.z == 0) {
-			console.log("collision");
+			//console.log("collision");
 			//return;
 		}
 

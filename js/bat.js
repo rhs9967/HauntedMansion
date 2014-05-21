@@ -9,7 +9,7 @@ app.Bat = function(){
 
 	// creates a new artifact based off of the cube geometry and which color it should be that is passed in
 	function Bat(geometry, material, x, y, z){
-		
+		console.log("HERE");
 		this.plane = new THREE.Mesh(geometry,material);
 		this.plane.receiveShadow = true;
 		this.plane.castShadow = true;
