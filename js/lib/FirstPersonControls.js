@@ -292,7 +292,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		//person.rotateOnAxis( new THREE.Vector3(0,1,0), this.phi);
 		
-		person.rotateOnAxis( new THREE.Vector3(0,1,0), this.phi);
+		//person.rotateOnAxis( new THREE.Vector3(0,1,0), this.phi);
 		this.theta = THREE.Math.degToRad( this.lon );
 
 		if ( this.constrainVertical ) {

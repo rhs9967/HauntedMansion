@@ -205,11 +205,8 @@ app.city = {
 				
 				this.person.position.set( -45, 5, 45);
 				//this.person.position.set( -45, 5, 45);
-<<<<<<< HEAD
 				this.person.position = this.camera.position;
-=======
 				//this.person.position = this.camera.position;
->>>>>>> 6ffefba4b5432cfcfd37cf011c632588d1b332ca
 				//this.person.rotation = this.camera.rotation;
 				this.scene.add(this.person);
 				
