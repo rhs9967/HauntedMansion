@@ -41,6 +41,7 @@ app.keydown = [];
 	queue.loadFile("js/pedestal.js");
 	queue.loadFile("js/mansion.js");
 	queue.loadFile("js/door.js");
+	queue.loadFile("js/bat.js");
 	
 	// skybox files
 	queue.loadFile("js/Detector.js");
@@ -63,7 +64,7 @@ app.keydown = [];
 	}
 	
 	function mouseDown(e){
-		console.log("mousedown");
+		//console.log("mousedown");
 		app.city.onMouseDown(e);
 	}
 	
@@ -88,12 +89,12 @@ app.keydown = [];
 			
 			// event listeners
 			window.addEventListener("keydown",function(e){
-				console.log("keydown=" + e.keyCode);
+				//console.log("keydown=" + e.keyCode);
 				app.keydown[e.keyCode] = true;
 			});
 				
 			window.addEventListener("keyup",function(e){
-				console.log("keyup=" + e.keyCode);
+				//console.log("keyup=" + e.keyCode);
 				app.keydown[e.keyCode] = false;
 			});
 			
