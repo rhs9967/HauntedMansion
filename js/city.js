@@ -26,6 +26,13 @@ app.city = {
 		paused: false,
 		noCollision: true,
 		dt: 1/60,
+		movementSpeed : 0.5,
+		actualMoveSpeed : (1/60) * 1.0,
+		collidableMeshList : [],
+		typeHit : 0,
+		bats : [],
+		batFlys: undefined,
+		clock: new THREE.Clock(),
 		
 		
     	init : function() {
@@ -50,15 +57,120 @@ app.city = {
 		// check collisions
 		this.checkCollisions();
 		
-		this.controls.update(this.dt);
-		
-		// DRAW	
-		this.renderer.render(this.scene, this.camera);
+		// UPDATE
+		//debugger;
+		this.controls.update(this.dt, this.person);
+		this.person.rotation = this.controls.object.rotation;
+		//this.controls.update(this.dt);
 		
 		// rotate uncollected artifacts
 		for(var i = 0; i < this.myobjects.length; i++) {
 			this.myobjects[i].update(this.dt);
 		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// collision detection and prevention
+		// coded by Zach Whitman 
+		var oldrotation = this.person.rotation;
+		//var tempPerson = this.person;
+		//this.scene.add(tempPerson);
+		var collided = false;
+		
+		// move the cube up,left,down,right
+		if ( this.controls.moveRight )
+		{
+			//this.person.position.x -= this.movementSpeed;
+			this.person.translateX( this.movementSpeed);
+			//tempPerson.translateX( this.movementSpeed);
+			//oldX += this.movementSpeed;
+			this.typeHit = 1;
+		}
+		if ( this.controls.moveLeft )
+		{
+			//this.person.position.x += this.movementSpeed;
+			this.person.translateX( -this.movementSpeed);
+			//tempPerson.translateX( -this.movementSpeed);
+			//oldX -= this.movementSpeed;
+			this.typeHit = 2;
+		}
+		if ( this.controls.moveBackward )
+		{
+			//this.person.position.z -= this.movementSpeed;
+			this.person.translateZ( this.movementSpeed);
+			//tempPerson.translateZ( this.movementSpeed);
+			//oldZ += this.movementSpee;
+			this.typeHit = 3;
+		}
+		if ( this.controls.moveForward )
+		{
+			//this.person.position.z += this.movementSpeed;
+			this.person.translateZ( -this.movementSpeed);
+			//tempPerson.translateZ( -this.movementSpeed);
+			//oldZ -= this.movementSpeed;
+			this.typeHit = 4;
+		}
+		
+		var originPoint = this.person.position.clone();
+		//var originPoint = tempPerson.position.clone();
+		//clearText(originPoint);
+		
+		// check for collisions
+		//for (var vertexIndex = 0; vertexIndex < tempPerson.geometry.vertices.length; vertexIndex++)
+		for (var vertexIndex = 0; vertexIndex < this.person.geometry.vertices.length; vertexIndex++)
+		{		
+			var localVertex = this.person.geometry.vertices[vertexIndex].clone();
+			var globalVertex = localVertex.applyMatrix4( this.person.matrix );
+			var directionVector = globalVertex.sub( this.person.position );
+			
+			//var localVertex = tempPerson.geometry.vertices[vertexIndex].clone();
+			//var globalVertex = localVertex.applyMatrix4( tempPerson.matrix );
+			//var directionVector = globalVertex.sub( tempPerson.position );
+			
+			var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+			var collisionResults = ray.intersectObjects( this.collidableMeshList );
+			
+			if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+			{
+			// There was a collision so you must undo the movement
+				if(this.typeHit == 1)
+				{
+					//this.person.position.x += this.movementSpeed;
+					this.person.translateX( -this.movementSpeed - 2);
+					collided = true;
+				}
+				else if(this.typeHit == 2)
+				{
+					//this.person.position.x -= this.movementSpeed;
+					this.person.translateX( +this.movementSpeed + 2);
+					collided = true;
+				}
+				else if(this.typeHit == 3)
+				{
+					//this.person.position.z += this.movementSpeed;
+					this.person.translateZ( -this.movementSpeed - 2);
+					collided = true;
+				}
+				else if(this.typeHit == 4)
+				{
+					//this.person.position.z -= this.movementSpeed;
+					this.person.translateZ( +this.movementSpeed + 2);
+					collided = true;
+				}
+			} // end collision hit
+			
+		} // end check for collision loop
+		
+		if(collided == false)
+		{
+			//this.person.position = tempPerson.position;
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		this.camera.position.set( this.person.position.x, this.person.position.y, this.person.position.z);
+		
+		// DRAW	
+		this.renderer.render(this.scene, this.camera);
+		
 		
 		
 		
@@ -86,13 +198,18 @@ app.city = {
 				var cubeGeometry = new THREE.CubeGeometry( .5, .5, .5 );
 				var cubeTexture = new THREE.ImageUtils.loadTexture( 'images/SquareBlue.png' );
 				var cubeMaterial = new THREE.MeshBasicMaterial( { map: cubeTexture, side: THREE.DoubleSide } );
+				
 				this.person = new THREE.Mesh(cubeGeometry,cubeMaterial);
 				this.person.receiveShadow = false;
 				this.person.castShadow = false;
 				
-				//this.person.position.set( 0, 5, 0);
+				this.person.position.set( -45, 5, 45);
 				//this.person.position.set( -45, 5, 45);
+<<<<<<< HEAD
 				this.person.position = this.camera.position;
+=======
+				//this.person.position = this.camera.position;
+>>>>>>> 6ffefba4b5432cfcfd37cf011c632588d1b332ca
 				//this.person.rotation = this.camera.rotation;
 				this.scene.add(this.person);
 				

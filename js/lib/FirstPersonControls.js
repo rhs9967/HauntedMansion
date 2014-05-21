@@ -201,7 +201,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	};
 
-	this.update = function( delta ) {		
+	this.update = function( delta, person ) {		
 		// addition
 		if (this.reset ) {
 			this.target = new THREE.Vector3( 0, 0, 0 );
@@ -290,6 +290,9 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		this.lat = Math.max( - 85, Math.min( 85, this.lat ) );
 		this.phi = THREE.Math.degToRad( 90 - this.lat );
 
+		//person.rotateOnAxis( new THREE.Vector3(0,1,0), this.phi);
+		
+		person.rotateOnAxis( new THREE.Vector3(0,1,0), this.phi);
 		this.theta = THREE.Math.degToRad( this.lon );
 
 		if ( this.constrainVertical ) {

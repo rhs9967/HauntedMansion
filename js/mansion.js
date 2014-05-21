@@ -32,7 +32,9 @@ app.mansion = {
 	
 	createMansion : function() {
 		// add planes
+		this.addPlane(this.LENGTH, 0, this.WIDTH, 'images/WoodCeiling1.jpg',Math.PI/2); // floor
 		this.addPlane(this.LENGTH, 0, this.WIDTH, 'images/WoodCeiling1.jpg',-Math.PI/2); // floor
+		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodCeiling1.jpg',-Math.PI/2); // ceiling 'images/Ceiling_Black.jpg'
 		this.addPlane(this.LENGTH, this.HEIGHT, this.WIDTH, 'images/WoodCeiling1.jpg',Math.PI/2); // ceiling 'images/Ceiling_Black.jpg'
 		
 		//var rowMax = this.LENGTH/this.WALL_LENGTH;
@@ -141,6 +143,7 @@ app.mansion = {
 		plane.position.y = h;
 		plane.rotation.x = rotation;
 		plane.receiveShadow = true;
+		app.city.collidableMeshList.push(plane);
 		this.scene.add(plane);
 	},
 	
@@ -162,6 +165,7 @@ app.mansion = {
 		//var wall = new app.Wall(geometry, material, 0, 0, 0);
 		wall.cube.rotation.y = rotation;
 		
+		app.city.collidableMeshList.push(wall.cube);
 		// add to wall array
 		this.walls.push(wall);
 	},
@@ -182,6 +186,7 @@ app.mansion = {
 		var door = new app.Door(geometry, material, x, y, z, direction);
 		door.move();
 		
+		app.city.collidableMeshList.push(door.cube);
 		// add door to targetable objects
 		app.city.myobjects.push(door);
 	},
