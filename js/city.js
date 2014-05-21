@@ -93,7 +93,7 @@ app.city = {
 				//this.person.position.set( 0, 5, 0);
 				//this.person.position.set( -45, 5, 45);
 				this.person.position = this.camera.position;
-				this.person.rotation = this.camera.rotation;
+				//this.person.rotation = this.camera.rotation;
 				this.scene.add(this.person);
 				
 				
@@ -216,6 +216,11 @@ app.city = {
 		var caster = new THREE.Raycaster();
 		
 		var rays = [
+			new THREE.Vector3(0,0,-1),
+			new THREE.Vector3(0,0,1),
+			new THREE.Vector3(1,0,0),
+			new THREE.Vector3(-1,0,0)
+		/*
 			new THREE.Vector3(0, 0, 1),
 			new THREE.Vector3(1, 0, 1),
 			new THREE.Vector3(1, 0, 0),
@@ -224,6 +229,7 @@ app.city = {
 			new THREE.Vector3(-1, 0, -1),
 			new THREE.Vector3(-1, 0, 0),
 			new THREE.Vector3(-1, 0, 1)
+			*/
 		];
 		
 		var collisions;
@@ -239,6 +245,10 @@ app.city = {
 			objectArray.push(app.mansion.walls[i].cube);
 		}
 		
+		for(var i=0; i < app.mansion.windows.length; i++) {
+			objectArray.push(app.mansion.windows[i]);
+		}
+		
 		// for each ray
 		for (var i = 0; i < rays.length; i++) {
 		  // We reset the raycaster to this direction
@@ -246,6 +256,12 @@ app.city = {
 		  // Test if we intersect with any obstacle mesh
 		  collisions = caster.intersectObjects(objectArray);
 		  // And disable that direction if we do
+		  if (collisions.length > 0 && collisions[0].distance < distance) {
+			  if ((i == 0 || i == 1) && this.direction.z == 1) {
+				this.direction.setZ(0);
+			  }
+		  }
+		  /*
 		  if (collisions.length > 0 && collisions[0].distance <= distance) {
 			// Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
 			if ((i === 0 || i === 1 || i === 7) && this.direction.z === 1) {
@@ -259,6 +275,7 @@ app.city = {
 			  this.direction.setX(0);
 			}
 		  }
+		  */
 		}
 	},
 	

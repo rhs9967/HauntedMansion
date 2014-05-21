@@ -18,8 +18,8 @@ app.mansion = {
 		
 		// Variable Properties
 		scene: undefined,
-		//mansion: undefined,1
 		walls: [],
+		windows: [],
 		lights: [],
 		
 	
@@ -50,8 +50,13 @@ app.mansion = {
 		for (var i = 0; i < this.WIDTH/this.WALL_LENGTH; i++) {
 			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
 			var z = this.LENGTH/2;
-			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
-			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, -z, 0);
+			if(i == 3){
+				this.addWindow(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
+				this.addWindow(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, -z, 0);
+			} else {
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, -z, 0);
+			}
 		}
 		
 		// design interior //
@@ -179,6 +184,65 @@ app.mansion = {
 		
 		// add door to targetable objects
 		app.city.myobjects.push(door);
+	},
+	
+	addWindow : function(l, h, w, texturePath, x, y, z, rotation){
+		//var w = w/2;
+		var s = l/10;
+		
+		// geometry //
+		var geometry = new THREE.Geometry();
+		geometry.applyMatrix( new THREE.Matrix4().makeTranslation( -l/2, h/2, 0 ) );
+		
+		// pieces
+		var baseG = new THREE.CubeGeometry(l,3.925,w);
+		var beamG = new THREE.CubeGeometry(l*.9,w*2,w);
+		var sideG = new THREE.CubeGeometry(w*2,7,w);
+		
+		//var base = new THREE.Mesh(baseG.clone());
+		var beam = new THREE.Mesh(beamG.clone());
+		var sideL = new THREE.Mesh(sideG.clone());
+		var sideR = new THREE.Mesh(sideG.clone());
+		
+		//base.position.set(0,2,0);
+		beam.position.set(0,h,0);
+		sideL.position.set(l/2 - w,7.425,0);
+		sideR.position.set(-l/2 + w,7.425,0);
+		
+		// base stuff
+		baseG.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 1.9625, 0 ) );
+		var textureB = new THREE.ImageUtils.loadTexture( 'images/Wall_Bottom.jpg' );
+		textureB.wrapS = THREE.RepeatWrapping;
+		textureB.repeat.set( 1, 1);
+		var materialB = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: textureB, wrapAround: true } );
+		
+		var base = new THREE.Mesh(baseG,materialB);
+		base.receiveShadow = true;
+		base.castShadow = true;		
+		base.position.set( x, y, z );	
+		
+		this.scene.add(base);
+		
+		// merge
+		//THREE.GeometryUtils.merge(geometry, base);
+		THREE.GeometryUtils.merge(geometry, beam);
+		THREE.GeometryUtils.merge(geometry, sideL);
+		THREE.GeometryUtils.merge(geometry, sideR);
+		
+		// texture & material
+		var texture = new THREE.ImageUtils.loadTexture( 'images/WoodCeiling1.jpg' );
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.repeat.set( 1, 1);
+		var material = new THREE.MeshLambertMaterial( { shading: THREE.SmoothShading, map: texture, wrapAround: true } );
+		
+		// create window
+		var window = new app.Window(geometry, material, x, y, z);
+		window.cube.rotation.y = rotation;
+		
+		// add window and base to targetable objects
+		this.windows.push(base);
+		app.city.myobjects.push(window);
+		
 	},
 	
 	addsconce: function(x, y, z, texturePath, isLit) {
