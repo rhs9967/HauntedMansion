@@ -8,7 +8,7 @@ var app = app || {};
 app.Artifact = function(){
 
 	// creates a new artifact based off of the cube geometry and which color it should be that is passed in
-	function Artifact(geometry, material, x, y, z){
+	function Artifact(geometry, material, x, y, z, color){
 		
 		this.cube = new THREE.Mesh(geometry,material);
 		this.cube.receiveShadow = true;
@@ -17,6 +17,7 @@ app.Artifact = function(){
 		this.cube.position.set( x, y, z);
 		
 		this.pedestalId = -1;
+		this.colorId = color;
 		
 	}; // end Artifact Constructor
 	

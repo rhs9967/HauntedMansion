@@ -9,7 +9,7 @@ var app = app || {};
 app.Pedestal = function(){
 
 	// creates a new artifact based off of the cube geometry and which color it should be that is passed in
-	function Pedestal(geometry, material, x, y, z){
+	function Pedestal(geometry, material, x, y, z, id){
 		
 		this.cube = new THREE.Mesh(geometry,material);
 		this.cube.receiveShadow = true;
@@ -18,6 +18,8 @@ app.Pedestal = function(){
 		this.cube.position.set( x, y, z);
 		
 		this.artifactId = -1;
+		this.colorId = id;
+		this.readied = false;
 		this.isPedestal = true;
 		
 	}; // end Pedestal Constructor

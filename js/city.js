@@ -30,6 +30,7 @@ app.city = {
 		actualMoveSpeed : (1/60) * 1.0,
 		collidableMeshList : [],
 		typeHit : 0,
+		readiedPedestals : 0,
 		bats : [],
 		batFlys: undefined,
 		clock: new THREE.Clock(),
@@ -54,6 +55,13 @@ app.city = {
 			return;
 		 }
 		 
+		 // check if pedestals are aligned correctly
+		 if(this.readiedPedestals == 4){
+			window.location.reload();
+		 }
+		 
+		 
+		// fixed player's y
 		this.person.position.y = 5;
 	
 		// check collisions
@@ -258,11 +266,11 @@ app.city = {
 				// add skybox
 				this.drawSkyBox();
 				
-				// add mansion
-				this.setupMansion();
-				
 				// add artifacts
 				this.setupArtifacts();
+				
+				// add mansion
+				this.setupMansion();			
 				
 				// add bats
 				this.setUpBats();
@@ -292,12 +300,15 @@ app.city = {
 		pedGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 2, 0 ) );
 		
 		// material
-		var pedMaterial = new THREE.MeshLambertMaterial({color: 0x8B4513});
+		var red = new THREE.MeshLambertMaterial({color: 0xA31919});
+		var blue = new THREE.MeshLambertMaterial({color: 0x002EB8});
+		var green = new THREE.MeshLambertMaterial({color: 0x007A29});
+		var yellow = new THREE.MeshLambertMaterial({color: 0xB8B800});
 		
-		var pedestal1 = new app.Pedestal(pedGeometry, pedMaterial, -40, 0, 30);
-		var pedestal2 = new app.Pedestal(pedGeometry, pedMaterial, 25, 0, 0);
-		var pedestal3 = new app.Pedestal(pedGeometry, pedMaterial, -30, 0, -40);
-		var pedestal4 = new app.Pedestal(pedGeometry, pedMaterial, 5, 0, -35);
+		var pedestal1 = new app.Pedestal(pedGeometry, red, -40, 0, 30, 0);
+		var pedestal2 = new app.Pedestal(pedGeometry, blue, 25, 0, 0, 1);
+		var pedestal3 = new app.Pedestal(pedGeometry, green, -30, 0, -40, 2);
+		var pedestal4 = new app.Pedestal(pedGeometry, yellow, 5, 0, -35, 3);
 		
 		// add pedestals
 		this.scene.add(pedestal1.cube);
@@ -332,10 +343,10 @@ app.city = {
 		var cubeMaterial4 = new THREE.MeshBasicMaterial( { map: cubeTexture4, side: THREE.DoubleSide } );
 		
 		// creates 3 new artifacts based off imported geometry, material and position
-		var cube1 = new app.Artifact(cubeGeometry, cubeMaterial1, 10, 5, -5);
-		var cube2 = new app.Artifact(cubeGeometry, cubeMaterial2, -15, 5, 0);
-		var cube3 = new app.Artifact(cubeGeometry, cubeMaterial3, 35, 5, 25);
-		var cube4 = new app.Artifact(cubeGeometry, cubeMaterial4, 5, 5, 35);
+		var cube1 = new app.Artifact(cubeGeometry, cubeMaterial1, 10, 5, -5, 0);
+		var cube2 = new app.Artifact(cubeGeometry, cubeMaterial2, -15, 5, 0, 1);
+		var cube3 = new app.Artifact(cubeGeometry, cubeMaterial3, 35, 5, 25, 2);
+		var cube4 = new app.Artifact(cubeGeometry, cubeMaterial4, 5, 5, 35, 3);
 		
 		// add cubes
 		this.scene.add(cube1.cube);
@@ -461,6 +472,12 @@ app.city = {
 					obj.artifactId = this.invobjects[0].cube.id;
 					this.invobjects[0].pedestalId = obj.cube.id;
 					
+					// check if correct artifact
+					if (this.invobjects[0].colorId == obj.colorId) {
+						obj.readied = true;
+						this.readiedPedestals++;
+					}
+					
 					// set artifact's position to match pedestal's
 					this.myobjects[obj.artifactId].cube.position.set(obj.cube.position.x, 5, obj.cube.position.z);
 					
@@ -489,6 +506,10 @@ app.city = {
 					// disconnect the two, pedestal first since we have access to artifact locally
 					this.myobjects[obj.pedestalId].artifactId = -1;
 					obj.pedestalId = -1;
+					if (this.myobjects[obj.pedestalId].readied) {
+						this.myobjects[obj.pedestalId].readied = false;
+						this.readiedPedestals--;
+					}
 				}
 				
 				// turn off lights
