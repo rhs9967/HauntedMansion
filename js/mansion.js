@@ -45,15 +45,26 @@ app.mansion = {
 		for (var i = 0; i < this.LENGTH/this.WALL_LENGTH; i++) {
 			var x = this.WIDTH/2;
 			var z = (i * this.WALL_LENGTH) - this.LENGTH/2 + this.WALL_LENGTH/2;
-			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
-			this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, -x, 0, z, Math.PI/2);
+			if(i == 3 || i == 6) {
+				this.addWindow(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, -x, 0, z, Math.PI/2);
+			} else if(i == 1 || i == 4 || i == 7){
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
+				this.addWindow(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, -x, 0, z, Math.PI/2);
+			} else {
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, Math.PI/2);
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, -x, 0, z, Math.PI/2);
+			}
 		}
 		// width
 		for (var i = 0; i < this.WIDTH/this.WALL_LENGTH; i++) {
 			var x = (i * this.WALL_LENGTH) - this.WIDTH/2 + this.WALL_LENGTH/2;
 			var z = this.LENGTH/2;
-			if(i == 3){
+			if(i == 3 || i == 6){
 				this.addWindow(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, -z, 0);
+			} else if(i == 2 || i == 5 || i == 7) {
+				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
 				this.addWindow(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, -z, 0);
 			} else {
 				this.addWall(this.WALL_LENGTH, this.HEIGHT, this.WALL_WIDTH, this.WALL_IMAGE, x, 0, z, 0);
@@ -120,11 +131,13 @@ app.mansion = {
 		this.addsconce(-20, 7, 10, this.SCONCE_IMAGE, true);
 		this.addsconce(-10, 7, -20, this.SCONCE_IMAGE, true);
 		this.addsconce(-50, 7, -20, this.SCONCE_IMAGE, true);
-		this.addsconce(-30, 7, -50, this.SCONCE_IMAGE, true);
+		this.addsconce(-40, 7, -50, this.SCONCE_IMAGE, true);
 		
 		// paintings
-		this.addPainting(4, 3, .1, 'images/painting1.jpg', -25, 6.5, 49.7, 0);
-		this.addPainting(5, 3, .1, 'images/painting2.jpg', 15, 6.5, 40.3, 0);
+		this.addPainting(4, 3, .1, 'images/painting1.jpg', 0, 6.5, 49.7, 0);
+		this.addPainting(5, 3, .1, 'images/painting2.jpg', 0, 6.5, 39.7, 0);
+		this.addPainting(4, 4, .1, 'images/painting3.jpg', -49.7, 6.5, 15, Math.PI/2);
+		this.addPainting(4, 3, .1, 'images/painting4.jpg', 10.3, 6.5, 30, Math.PI/2);
 	},
 	
 	// Add a plane to the scene
@@ -225,6 +238,7 @@ app.mansion = {
 		base.receiveShadow = true;
 		base.castShadow = true;		
 		base.position.set( x, y, z );	
+		base.rotation.y = rotation;
 		
 		this.scene.add(base);
 		
@@ -246,6 +260,7 @@ app.mansion = {
 		
 		// add window and base to targetable objects
 		this.windows.push(base);
+		app.city.collidableMeshList.push(base);
 		app.city.myobjects.push(window);
 		
 	},
