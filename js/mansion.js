@@ -135,7 +135,7 @@ app.mansion = {
 		this.addsconce(-40, 7, -50, this.SCONCE_IMAGE, true);
 		
 		// paintings
-		this.addPainting(4, 3, .1, 'images/painting1.jpg', 0, 6.5, 49.7, 0);
+		this.addPainting(4, 3, .1, 'images/painting1.jpg', 30, 6.5, 49.7, 0);
 		this.addPainting(5, 3, .1, 'images/painting2.jpg', 0, 6.5, 39.7, 0);
 		this.addPainting(4, 4, .1, 'images/painting3.jpg', -49.7, 6.5, 15, Math.PI/2);
 		this.addPainting(4, 3, .1, 'images/painting4.jpg', 10.3, 6.5, 30, Math.PI/2);

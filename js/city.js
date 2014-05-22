@@ -26,7 +26,7 @@ app.city = {
 		paused: false,
 		noCollision: true,
 		dt: 1/60,
-		movementSpeed : 0.5,
+		movementSpeed : 0.3,
 		actualMoveSpeed : (1/60) * 1.0,
 		collidableMeshList : [],
 		typeHit : 0,
@@ -68,7 +68,7 @@ app.city = {
 			if(this.gameOver == false) {
 				this.endTimer++;
 				this.gameOver = true;
-			} else if (this.endTimer < 200){
+			} else if (this.endTimer < 150){
 				console.log(this.endTimer);
 				this.end.intensity +=.5;
 				this.endTimer++;
@@ -302,7 +302,7 @@ app.city = {
 				// controls
 				this.controls = new THREE.FirstPersonControls(this.camera);
 				this.controls.movementSpeed = 15;
-				this.controls.lookSpeed = .75;
+				this.controls.lookSpeed = .5;
 				this.controls.autoForward = false;
 				
 				// allows the gui to control different things
@@ -641,7 +641,7 @@ app.city = {
 		var bat = new THREE.Mesh(planeGeometry,planeMaterial);
 		bat.position.set(-45,5,45);
 		
-		this.scene.add(bat);
+		//this.scene.add(bat);
 		this.bats.push(bat);
 		
 	},
@@ -651,12 +651,13 @@ app.city = {
 		//debugger;
 		var planeTexture = new THREE.ImageUtils.loadTexture('images/instructions.png');
 		var planeMaterial = new THREE.MeshBasicMaterial( {map: planeTexture, side:THREE.DoubleSide } );
-		var planeGeometry = new THREE.PlaneGeometry(5,5, 1,1);
+		var planeGeometry = new THREE.PlaneGeometry(5,3, 1,1);
 		
 		this.instruct = new THREE.Mesh(planeGeometry,planeMaterial);
 
 		//plane.rotation.y += 180;
-		this.instruct.position.set(-40,7.5,40.5);
+		//this.instruct.position.set(-40,7.5,40.5);
+		this.instruct.position.set(-45,5,40.3);
 		
 		this.scene.add(this.instruct);
 	},

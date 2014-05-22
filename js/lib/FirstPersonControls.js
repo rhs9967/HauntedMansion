@@ -45,7 +45,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.moveBackward = false;
 	this.moveLeft = false;
 	this.moveRight = false;
-	this.freeze = false;
+	this.freeze = true;
 	this.hide = false;
 	
 	// addition
@@ -152,7 +152,6 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		//event.preventDefault();
 
 		switch ( event.keyCode ) {
-
 			case 38: /*up*/
 			case 87: /*W*/ this.moveForward = true; break;
 
@@ -167,13 +166,12 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			//case 82: /*R*/ this.moveUp = true; break;
 			//case 70: /*F*/ this.moveDown = true; break;
-			case 70: /*F*/ this.lightOn = !this.lightOn; break;
-
-			case 80: /*P*/ this.freeze = !this.freeze; break;
+			//case 82: /*R*/ this.hide = !this.hide; break;
+			case 70: /*F*/ this.lightOn = !this.lightOn; break;			
 			
-			// addition
 			case 90: /*Z*/ this.reset = true; break;
-			case 81: /*Q*/ this.hide = !this.hide; break;
+			case 81: /*Q*/ this.freeze = !this.freeze;
+						   this.hide = true;  break;
 
 		}
 
@@ -207,7 +205,12 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	};
 
 	this.update = function( delta, person ) {		
-		// addition
+		// instructions
+		if (!this.hide){
+			return;
+		}
+		
+		// reset
 		if (this.reset ) {
 			this.target = new THREE.Vector3( 0, 0, 0 );
 			this.object.lookAt( this.target );
@@ -225,15 +228,11 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 				}
 		}
 
+		// pause
 		if ( this.freeze ) {
 
 			return;
 
-		}
-		
-		if (app.city.direction.x == 0 || app.citydirection.z == 0) {
-			//console.log("collision");
-			//return;
 		}
 
 		if ( this.heightSpeed ) {
