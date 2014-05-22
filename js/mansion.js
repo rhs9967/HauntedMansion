@@ -19,6 +19,7 @@ app.mansion = {
 		// Variable Properties
 		scene: undefined,
 		walls: [],
+		doors: [],
 		windows: [],
 		lights: [],
 		
@@ -202,6 +203,7 @@ app.mansion = {
 		app.city.collidableMeshList.push(door.cube);
 		// add door to targetable objects
 		app.city.myobjects.push(door);
+		this.doors.push(door);
 	},
 	
 	addWindow : function(l, h, w, texturePath, x, y, z, rotation){
@@ -268,7 +270,7 @@ app.mansion = {
 	addsconce: function(x, y, z, texturePath, isLit) {
 		if(isLit){
 			// pointLight
-			var light = new THREE.PointLight(0xffffff, 2, 25);
+			var light = new THREE.PointLight(0xffefef, 2, 25);
 			light.position.set(x, y, z);
 			this.scene.add( light );
 			

@@ -33,9 +33,12 @@ app.city = {
 		readiedPedestals : 0,
 		bats : [],
 		batFlys: undefined,
-		clock: new THREE.Clock(),
+		clock: undefined,
+		endTimer: 0,
+		end: undefined,
 		gui: undefined,
 		controlz: undefined,
+		gameOver: false,
 		
 		
     	init : function() {
@@ -59,7 +62,21 @@ app.city = {
 		 
 		 // check if pedestals are aligned correctly
 		 if(this.readiedPedestals == 4){
-			window.location.reload();
+			// END GAME //
+			this.end.position = this.camera.position;
+			if(this.gameOver == false) {
+				this.endTimer++;
+				this.gameOver = true;
+			} else if (this.endTimer < 200){
+				console.log(this.endTimer);
+				this.end.intensity +=.5;
+				this.endTimer++;
+			} else {
+				window.location.reload();
+			}
+			// DRAW	
+			this.renderer.render(this.scene, this.camera);
+			return;
 		 }
 		 
 		 
@@ -186,7 +203,7 @@ app.city = {
 		{
 			this.person.position = tempPerson.position;
 		} else {
-			console.log("collision");
+			//console.log("collision");
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		this.person.position = tempPerson.position;
@@ -259,6 +276,8 @@ app.city = {
 				//this.person.rotation = this.camera.rotation;
 				this.scene.add(this.person);
 				
+				this.clock = new THREE.Clock();
+				
 				
 				//this.camera.lookAt( this.scene.position );
 
@@ -325,8 +344,13 @@ app.city = {
 				this.scene.add(this.flashLight);
 				
 				// add subtle ambient lighting
-				var ambientLight = new THREE.AmbientLight(0x2f2f2f);//(0xffffff);
+				var ambientLight = new THREE.AmbientLight(0x0f0f0f);//(0xffffff);
 				this.scene.add(ambientLight);
+				
+				// end game light effect setup
+				this.end = new THREE.PointLight(0xffffff, 0, 100);
+				this.end.position = this.camera.position;
+				this.scene.add( this.end );
 	},
 			
 	setupMansion: function(){	
@@ -529,6 +553,15 @@ app.city = {
 			} 
 			// else if a door
 			else if (obj.isDoor){
+				// close all doors
+				for(var i=0; i < app.mansion.doors.length; i++) {
+					// don't close doors if clicked door is already open
+					if (obj != app.mansion.doors[i]){
+						app.mansion.doors[i].isOpen = false;
+						app.mansion.doors[i].move();
+					}
+					// reopen
+				}
 				// interact with door
 				obj.isOpen = !obj.isOpen;
 				obj.move();
