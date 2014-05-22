@@ -46,6 +46,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.moveLeft = false;
 	this.moveRight = false;
 	this.freeze = false;
+	this.hide = false;
 	
 	// addition
 	this.reset = false;
@@ -168,10 +169,11 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			//case 70: /*F*/ this.moveDown = true; break;
 			case 70: /*F*/ this.lightOn = !this.lightOn; break;
 
-			case 81: /*Q*/ this.freeze = !this.freeze; break;
+			case 80: /*P*/ this.freeze = !this.freeze; break;
 			
 			// addition
 			case 90: /*Z*/ this.reset = true; break;
+			case 81: /*Q*/ this.hide = !this.hide; break;
 
 		}
 
@@ -198,6 +200,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 			
 			// addition
 			case 90: /*Z*/ this.reset = false; break;
+			//case 81: /*Q*/ this.hide = false; break;
 
 		}
 
