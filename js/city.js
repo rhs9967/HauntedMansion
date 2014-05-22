@@ -39,6 +39,7 @@ app.city = {
 		gui: undefined,
 		controlz: undefined,
 		gameOver: false,
+		instruct: undefined,
 		
 		
     	init : function() {
@@ -77,6 +78,17 @@ app.city = {
 			// DRAW	
 			this.renderer.render(this.scene, this.camera);
 			return;
+		 }
+		 
+		 // check to see whether to hide/unhide the instructions
+		 if(this.controls.hide == true)
+		 {
+			this.scene.remove(this.instruct);
+			console.log("HERE");
+		 }
+		 else
+		 {
+			this.scene.add(this.instruct);
 		 }
 		 
 		 
@@ -330,6 +342,9 @@ app.city = {
 				
 				// add bats
 				this.setUpBats();
+				
+				// add instructions
+				this.instructions();
 				
 				// once done adding to myobjects, set object.id for each object
 				for(var i=0; i < this.myobjects.length; i++) {
@@ -614,7 +629,8 @@ app.city = {
 	drawPauseScreen: function(){
 		// do something pause-like if you want
 	},
-		// setUpBats written by Zach W
+	
+	// setUpBats written by Zach W
 	setUpBats: function()
 	{
 		//debugger;
@@ -628,6 +644,21 @@ app.city = {
 		this.scene.add(bat);
 		this.bats.push(bat);
 		
+	},
+	// instructions written by Zach W.
+	instructions: function()
+	{
+		//debugger;
+		var planeTexture = new THREE.ImageUtils.loadTexture('images/instructions.png');
+		var planeMaterial = new THREE.MeshBasicMaterial( {map: planeTexture, side:THREE.DoubleSide } );
+		var planeGeometry = new THREE.PlaneGeometry(5,5, 1,1);
+		
+		this.instruct = new THREE.Mesh(planeGeometry,planeMaterial);
+
+		//plane.rotation.y += 180;
+		this.instruct.position.set(-40,7.5,40.5);
+		
+		this.scene.add(this.instruct);
 	},
 	
 	// TextureAnimator function written by Lee Stemkoski
